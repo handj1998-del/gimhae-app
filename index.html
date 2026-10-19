@@ -7,9 +7,10 @@
 *{box-sizing:border-box}
 body{margin:0;font-family:"Pretendard Variable",Pretendard,"Noto Sans TC","Noto Sans SC",-apple-system,system-ui,sans-serif;background:linear-gradient(180deg,#eceef2,#f7f7f9);color:#1d1d1f;-webkit-font-smoothing:antialiased;letter-spacing:-.01em}
 .shell{max-width:480px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;background:#fafafb;box-shadow:0 0 40px rgba(0,0,0,.06)}
-header{background:linear-gradient(135deg,#e8402f,#da291c 55%,#b81f14);color:#fff;padding:32px 24px 40px;border-radius:0 0 24px 24px;text-align:center;box-shadow:0 8px 24px rgba(218,41,28,.25)}
-header h1{margin:0;font-size:24px;font-weight:700;letter-spacing:-.02em}
-header p{margin:8px 0 0;font-size:13px;opacity:.85;font-weight:500;letter-spacing:.04em}
+header{background:#fff;padding:28px 24px 24px;text-align:center;border-bottom:3px solid #da291c;box-shadow:0 4px 16px rgba(0,0,0,.05);transition:padding .2s}
+header img{display:block;margin:0 auto;width:78%;max-width:320px;height:auto}
+header.small{padding:12px 24px}
+header.small img{width:auto;height:52px}
 #app{flex:1;display:flex;flex-direction:column;padding:24px;gap:16px}
 #app.center{justify-content:center}
 .title{margin:8px 0;font-size:20px;font-weight:700;text-align:center}
@@ -27,7 +28,7 @@ box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 4px 0 #9e1a10,0 8px 16px rgba(2
 .card p{margin:0;color:#888;text-align:center}
 #installBtn{display:none;position:fixed;right:16px;bottom:16px;height:48px;padding:0 24px;border:0;border-radius:24px;font:inherit;font-size:15px;font-weight:700;color:#fff;cursor:pointer;z-index:999;background:linear-gradient(180deg,#ef4a3a,#c4220f);box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 3px 0 #9e1a10,0 8px 16px rgba(0,0,0,.2)}
 #installBtn:active{transform:translateY(2px);box-shadow:0 1px 0 #9e1a10}
-</style></head><body><div class="shell"><header><h1>김해공항 롯데렌터카</h1><p>Gimhae Airport · 金海機場</p></header><main id="app"></main></div>
+</style></head><body><div class="shell"><header id="hdr"><img src="images/logo.png" alt="LOTTE rent-a-car GIMHAE AIRPORT"></header><main id="app"></main></div>
 <script>
 const T={
 ko:{lt:"한국어",title:"메뉴를 선택하세요",menu:["렌터카 반납 안내","보험 안내","관광 가이드"],back:"언어 선택",back2:"메뉴",soon:"내용 준비 중입니다."},
@@ -41,15 +42,15 @@ insurance:{ko:"",en:"",tw:"",zh:""},
 tour:{ko:"",en:"",tw:"",zh:""}
 };
 const esc=x=>String(x).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-const app=document.getElementById('app');let lang;
+const app=document.getElementById('app'),hdr=document.getElementById('hdr');let lang;
 const SVG=["<path d='M5 17h14M6 17v2M18 17v2M4 13l2-5h12l2 5v4H4z'/><circle cx='8' cy='14' r='1'/><circle cx='16' cy='14' r='1'/>","<path d='M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z'/><path d='M9 12l2 2 4-4'/>","<path d='M9 4L3 6v14l6-2 6 2 6-2V4l-6 2z'/><path d='M9 4v14M15 6v14'/>"];
 const ic=i=>`<span class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${SVG[i]}</svg></span>`;
 const ARR=`<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>`;
 const L=[["ko","한국어","Korean"],["en","English","영어"],["tw","中文 繁體","Traditional Chinese"],["zh","中文 简体","Simplified Chinese"]];
-window.home=function(){app.className="center";app.innerHTML=L.map(([k,a,b])=>`<button class="btn" onclick="menu('${k}')"><span>${a}<small>${b}</small></span></button>`).join('');scrollTo(0,0)}
-window.menu=function(l){lang=l;const t=T[l];app.className="";app.innerHTML=`<button class="back" onclick="home()">${ARR}${t.back}</button><h2 class="title">${t.title}</h2>`+
+window.home=function(){hdr.className="";app.className="center";app.innerHTML=L.map(([k,a,b])=>`<button class="btn" onclick="menu('${k}')"><span>${a}<small>${b}</small></span></button>`).join('');scrollTo(0,0)}
+window.menu=function(l){hdr.className="small";lang=l;const t=T[l];app.className="";app.innerHTML=`<button class="back" onclick="home()">${ARR}${t.back}</button><h2 class="title">${t.title}</h2>`+
 t.menu.map((m,i)=>`<button class="btn sub" onclick="page(${i})">${ic(i)}${m}</button>`).join('');scrollTo(0,0)}
-window.page=function(i){const t=T[lang],id=IDS[i];
+window.page=function(i){hdr.className="small";const t=T[lang],id=IDS[i];
 const txt=((CONTENT[id]&&CONTENT[id][lang])||"").trim();
 const body=txt?esc(txt).replace(/\n/g,"<br>"):`<p>${t.soon}</p>`;
 app.className="";app.innerHTML=`<button class="back" onclick="menu('${lang}')">${ARR}${t.back2}</button><h2 class="title">${t.menu[i]}</h2><div class="card">${body}</div>`;scrollTo(0,0)}
