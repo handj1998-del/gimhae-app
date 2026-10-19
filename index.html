@@ -51,6 +51,10 @@ textarea.inp{height:72px;padding:10px 14px;resize:vertical}
 .frow{display:flex;gap:10px;align-items:center}
 .frow img{width:56px;height:56px;object-fit:cover;border-radius:8px;flex:none}
 .frow .inp{height:40px;font-size:14px}
+.prow{border:1px dashed #d5d7dd;border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:6px}
+.prow .top{display:flex;gap:10px;align-items:center}.prow .top img{width:64px;height:64px;object-fit:cover;border-radius:8px;flex:none}
+.prow .inp{height:40px;font-size:14px}.prow textarea.inp{height:90px}.prow .ost{font-size:12px;color:#888}.prow details summary{font-size:13px;color:#666;cursor:pointer}
+.map{margin-left:8px;font-size:13px;color:#1a73e8;text-decoration:none;white-space:nowrap}
 .trow{border:1px dashed #d5d7dd;border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:6px}
 .trow .inp{height:40px;font-size:14px}
 .bar{height:10px;border-radius:5px;background:#eee;overflow:hidden}.bar i{display:block;height:100%;width:0;background:#da291c;transition:width .2s}
@@ -132,10 +136,10 @@ window.zoom=src=>{const lb=$("lb");lb.querySelector("img").src=src;lb.style.disp
 function cardHTML(b,t){const tl=(b.phone||"").replace(/[^0-9+]/g,"");
 let h=`<div class="bc">`;if(b.img)h+=`<img src="${esc(b.img)}" alt="${esc(b.title||b.name||"")}" loading="lazy" onclick="zoom(this.src)">`;
 const rows=[];if(b.title)rows.push(`<b>${esc(b.title)}</b>`);if(b.name)rows.push(`<b>${esc(b.name)}</b>`);
-if(b.address)rows.push(`<div><em>${t.addr}</em>${esc(b.address)}</div>`);
+if(b.address)rows.push(`<div><em>${t.addr}</em>${esc(b.address)}<a class="map" target="_blank" rel="noopener" href="https://map.naver.com/p/search/${encodeURIComponent(b.address)}">${MAPL[lang]||MAPL.ko}</a></div>`);
 if(b.phone)rows.push(`<div><em>${t.tel}</em><a class="tel" href="tel:${esc(tl)}">${esc(b.phone)}</a></div>`);
 if(b.hours)rows.push(`<div><em>${t.hours}</em>${esc(b.hours)}</div>`);
-if(b.memo)rows.push(`<div>${esc(b.memo).replace(/\n/g,"<br>")}</div>`);
+if(b.memo&&b.type!=="image")rows.push(`<div>${esc(b.memo).replace(/\n/g,"<br>")}</div>`);
 if(rows.length)h+=`<div class="bt">${rows.join("")}</div>`;return h+`</div>`}
 window.branches=async function(i){const t=T[lang],l=lang;app.className="";
 app.innerHTML=`<button class="back" onclick="menu('${l}')">${ARR}${t.back2}</button><h2 class="title">${t.menu[i]}</h2><div id="bl"><div class="card"><p>${t.loading}</p></div></div><button class="adm-link" onclick="admin()">관리자</button>`;scrollTo(0,0);
@@ -154,7 +158,20 @@ let max=1600,q=.82,out;const cv=document.createElement("canvas"),cx=cv.getContex
 for(let k=0;k<12;k++){const sc=Math.min(1,max/Math.max(im.naturalWidth,im.naturalHeight));cv.width=Math.round(im.naturalWidth*sc);cv.height=Math.round(im.naturalHeight*sc);
 cx.fillStyle="#fff";cx.fillRect(0,0,cv.width,cv.height);cx.drawImage(im,0,0,cv.width,cv.height);out=cv.toDataURL("image/jpeg",q);if(out.length<750000)return res(out);
 if(q>.6)q-=.1;else max=Math.round(max*.8)}res(out)};im.onerror=()=>{URL.revokeObjectURL(url);rej(new Error("이미지를 읽을 수 없습니다: "+file.name))};im.src=url})}
-let picked=[];
+let picked=[];const MAPL={ko:"지도 보기",en:"View map",tw:"查看地圖",zh:"查看地图"};
+const cleanName=n=>n.replace(/\.[^.]+$/,"").replace(/\s*[\(\[]\d+[\)\]]\s*$/,"").replace(/[_\-]+/g," ").replace(/\s+\d+$/,"").replace(/\s+/g," ").trim();
+const TESS="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js";let worker;
+function loadTess(){return window.Tesseract?Promise.resolve():new Promise((r,j)=>{const sc=document.createElement("script");sc.src=TESS;sc.onload=r;sc.onerror=()=>j(new Error("OCR 라이브러리를 불러오지 못했습니다"));document.head.appendChild(sc)})}
+async function getWorker(cb){if(worker)return worker;await loadTess();worker=await Tesseract.createWorker(["kor","eng"],1,{logger:m=>cb&&cb(m)});return worker}
+function parseOCR(raw){const L=raw.split(/\n/).map(x=>x.replace(/\s+/g," ").trim()).filter(Boolean);const out={address:"",phone:"",hours:""};
+const lab=(l,re)=>l.replace(re,"").replace(/^[\s:：.\-·]+/,"").trim();
+const ph=raw.match(/(\+82[\s\-.]?\(?0?\)?\d{1,2}[\s\-.)]?\d{3,4}[\s\-.]?\d{4})|(\b1[5-8]\d{2}[\s\-.]?\d{4}\b)|(\b0\d{1,2}[\s\-.)]\s?\d{3,4}[\s\-.]\d{4}\b)/);if(ph)out.phone=ph[0].replace(/\s+/g," ").trim();
+const ADR=/(서울|부산|대구|인천|광주|대전|울산|세종|경기|강원|충청|충북|충남|전라|전북|전남|경상|경북|경남|제주)[^\n]*?(시|도)?[^\n]*?(구|군|시)[^\n]*?(로|길|동|읍|면|리)\s*\d+/;
+let al=L.find(l=>/^(주\s*소|address|addr)/i.test(l));if(al)out.address=lab(al,/^(주\s*소|address|addr)/i);else{const a=L.find(l=>ADR.test(l));if(a){const m=a.match(ADR);out.address=a.slice(m.index).trim()}}
+const H=/\d{1,2}\s*[:：.]\s*\d{2}\s*[~\-–〜∼]\s*\d{1,2}\s*[:：.]\s*\d{2}/;const hs=[];
+L.forEach(l=>{if(/영업\s*시간|운영\s*시간|hours/i.test(l)){hs.push(lab(l,/^.*?(영업\s*시간|운영\s*시간|business hours|hours)/i))}else if(H.test(l)||/연중\s*무휴|평일|주말|토요일|일요일|공휴일|휴무/.test(l)){if(l!==al&&!(out.address&&l.includes(out.address)))hs.push(l)}});
+out.hours=[...new Set(hs.filter(Boolean))].join(" / ");return out}
+window.__parseOCR=parseOCR;
 async function refresh(){const box=$("exl");if(!box)return;box.innerHTML=`<div style="color:#888;font-size:14px">불러오는 중…</div>`;
 try{const items=await timeout(list(),8000);$("exn").textContent=items.length;
 box.innerHTML=items.length?items.map(b=>`<div class="ex">${b.img?`<img src="${esc(b.img)}" alt="">`:""}<span>${esc(b.title||b.name||"(제목 없음)")}${b.address?" · "+esc(b.address):""}</span><button class="del" data-id="${b.id}">삭제</button></div>`).join(""):`<div style="color:#888;font-size:14px">등록된 항목이 없습니다.</div>`;
@@ -164,27 +181,36 @@ function trow(){const d=document.createElement("div");d.className="trow";d.inner
 async function panel(){hdr.className="small";app.className="";
 app.innerHTML=`<button class="back" onclick="home()">${ARR}처음으로</button><h2 class="title">타지역 지점 안내 · 관리</h2>
 <div id="st" style="font-size:13px;color:#888;text-align:center">Firebase 연결 중…</div>
-<div class="sec"><h3>사진 올리기 (여러 장 한 번에)</h3><input id="files" type="file" accept="image/jpeg,image/png" multiple style="display:none"><button class="sbtn g" id="pick">사진 선택 (jpg, png)</button><div id="fl" style="display:flex;flex-direction:column;gap:8px"></div><button class="sbtn" id="up" disabled>사진 업로드</button></div>
+<div class="sec"><h3>사진 올리기 (여러 장 한 번에)</h3><div style="font-size:13px;color:#888">파일 이름이 지점명이 되고, 사진 속 주소·전화·영업시간을 자동으로 읽어 채웁니다. 저장 전에 확인·수정하세요.</div><input id="files" type="file" accept="image/jpeg,image/png" multiple style="display:none"><button class="sbtn g" id="pick">사진 선택 (jpg, png)</button><div id="fl" style="display:flex;flex-direction:column;gap:8px"></div><button class="sbtn" id="up" disabled>사진 업로드</button></div>
 <div class="sec"><h3>글로 지점 추가</h3><div id="tl" style="display:flex;flex-direction:column;gap:10px"></div><button class="sbtn g" id="addrow">+ 지점 한 칸 더</button><button class="sbtn" id="savet">지점 저장</button></div>
 <div class="sec"><div class="bar" id="bar" style="display:none"><i></i></div><div id="prog" style="font-size:14px;text-align:center"></div><h3>등록된 항목 (<span id="exn">0</span>)</h3><div id="exl"></div></div>
 <button class="adm-link" onclick="sessionStorage.removeItem('gadm');home()">로그아웃</button>`;scrollTo(0,0);
 picked=[];$("tl").appendChild(trow());
 $("pick").onclick=()=>$("files").click();
-$("files").onchange=e=>{for(const f of e.target.files){if(!/image\/(jpeg|png)/.test(f.type))continue;picked.push({file:f,url:URL.createObjectURL(f),title:f.name.replace(/\.[^.]+$/,"")})}e.target.value="";drawPicked()};
+$("files").onchange=e=>{const add=[];for(const f of e.target.files){if(!/image\/(jpeg|png)/.test(f.type))continue;const p={file:f,url:URL.createObjectURL(f),name:cleanName(f.name),address:"",phone:"",hours:"",memo:"",ost:"대기 중"};picked.push(p);add.push(p)}e.target.value="";drawPicked();runOCR(add)};
 $("addrow").onclick=()=>$("tl").appendChild(trow());
 $("up").onclick=uploadImgs;$("savet").onclick=saveTexts;
 try{const usr=await timeout(signIn(),10000);$("st").innerHTML=`<span class="ok">● 연결됨</span>`;window.__anonUid=usr.uid}catch(e){$("st").innerHTML=`<span class="err">${esc(emsg(e))}</span>`;window.__anonErr=e.code||e.message}
 refresh()}
-function drawPicked(){const fl=$("fl");fl.innerHTML="";picked.forEach((p,i)=>{const r=document.createElement("div");r.className="frow";r.innerHTML=`<img src="${p.url}" alt=""><input class="inp" placeholder="제목 (선택)" value="${esc(p.title)}"><button class="del">빼기</button>`;
-r.querySelector("input").oninput=e=>p.title=e.target.value;r.querySelector("button").onclick=()=>{picked.splice(i,1);drawPicked()};fl.appendChild(r)});
-$("up").disabled=!picked.length;$("up").textContent=picked.length?`사진 ${picked.length}장 업로드`:"사진 업로드"}
+let ocrQ=Promise.resolve();
+function runOCR(list){ocrQ=ocrQ.then(async()=>{for(const p of list){if(!picked.includes(p))continue;p.ost="글자 읽는 중… (처음엔 언어 데이터 약 10MB 다운로드)";p.busy=true;upd(p);
+try{const w=await getWorker(m=>{if(m.status&&p.busy){p.ost=(/recogniz/.test(m.status)?"글자 읽는 중… ":"OCR 준비 중… ")+Math.round((m.progress||0)*100)+"%";upd(p)}});
+const r=await w.recognize(p.file);const raw=(r.data.text||"").trim();const o=parseOCR(raw);
+for(const k of ["address","phone","hours"])if(!p[k])p[k]=o[k];if(!p.memo)p.memo=raw;p.ost=raw?"✓ 자동 입력됨 · 확인 후 수정하세요":"글자를 찾지 못했습니다";}catch(e){p.ost="OCR 실패: "+(e.message||e)}
+p.busy=false;if(picked.includes(p)){const r=p.el;if(r)r.querySelectorAll("[data-k]").forEach(x=>x.value=p[x.dataset.k]||"")}upd(p)}upBtn()})}
+function upd(p){if(p.el)p.el.querySelector(".ost").textContent=p.ost;upBtn()}
+function upBtn(){const b=$("up");if(!b)return;const busy=picked.some(p=>p.busy||p.ost==="대기 중");b.disabled=!picked.length;b.textContent=picked.length?`사진 ${picked.length}장 저장`+(busy?" (글자 읽는 중)":""):"사진 업로드"}
+function drawPicked(){const fl=$("fl");fl.innerHTML="";picked.forEach((p,i)=>{const r=document.createElement("div");r.className="prow";p.el=r;
+r.innerHTML=`<div class="top"><img src="${p.url}" alt=""><div style="flex:1;display:flex;flex-direction:column;gap:4px"><input class="inp" data-k="name" placeholder="지점명"><div class="ost"></div></div><button class="del">빼기</button></div><input class="inp" data-k="address" placeholder="주소"><input class="inp" data-k="phone" type="tel" placeholder="전화번호"><input class="inp" data-k="hours" placeholder="영업시간"><details><summary>읽은 글자 (메모)</summary><textarea class="inp" data-k="memo" placeholder="OCR 원문"></textarea></details>`;
+r.querySelectorAll("[data-k]").forEach(x=>{x.value=p[x.dataset.k]||"";x.oninput=()=>p[x.dataset.k]=x.value});r.querySelector(".ost").textContent=p.ost;
+r.querySelector("button.del").onclick=()=>{picked.splice(i,1);drawPicked()};fl.appendChild(r)});upBtn()}
 function prog(done,total,msg){const b=$("bar");b.style.display="block";b.firstChild.style.width=(total?done/total*100:0)+"%";$("prog").innerHTML=msg}
 async function uploadImgs(){const btn=$("up");btn.disabled=true;const{f,db}=await F();let ok=0,fail=[];const n=picked.length;
 try{await signIn()}catch(e){prog(0,n,`<span class="err">${esc(emsg(e))}</span>`);btn.disabled=false;return}
 for(let i=0;i<n;i++){const p=picked[i];prog(i,n,`업로드 중… ${i+1} / ${n}`);
-try{const img=await compress(p.file);await f.addDoc(f.collection(db,"branches"),{type:"image",title:(p.title||"").trim(),img,createdAt:f.serverTimestamp()});ok++}catch(e){fail.push(p.file.name+": "+emsg(e))}}
+try{const img=await compress(p.file);await f.addDoc(f.collection(db,"branches"),{type:"image",name:(p.name||"").trim(),address:(p.address||"").trim(),phone:(p.phone||"").trim(),hours:(p.hours||"").trim(),memo:(p.memo||"").trim(),img,createdAt:f.serverTimestamp()});ok++}catch(e){fail.push(p.file.name+": "+emsg(e))}}
 prog(n,n,`완료: ${ok}장 성공`+(fail.length?`<div class="err">${fail.length}장 실패<br>${fail.map(esc).join("<br>")}</div>`:""));
-picked=picked.filter((p,i)=>false);drawPicked();refresh()}
+picked=[];drawPicked();$("up").disabled=false;refresh()}
 async function saveTexts(){const rows=[...$("tl").querySelectorAll(".trow")].map(r=>{const o={};r.querySelectorAll("[data-k]").forEach(x=>o[x.dataset.k]=x.value.trim());return o}).filter(o=>o.name);
 if(!rows.length){prog(0,0,`<span class="err">지점명을 입력하세요.</span>`);return}
 const btn=$("savet");btn.disabled=true;const{f,db}=await F();let ok=0,fail=[];
