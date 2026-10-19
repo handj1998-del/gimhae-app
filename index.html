@@ -26,6 +26,8 @@ const IDS=["return","insurance","tour"],LN={ko:"한국어",en:"English",tw:"中�
 const esc=x=>String(x).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const app=document.getElementById('app');let lang;
 const ERR={"auth/invalid-credential":"이메일 또는 비밀번호가 틀렸어요.","auth/wrong-password":"비밀번호가 틀렸어요.","auth/user-not-found":"등록되지 않은 이메일이에요.","auth/invalid-email":"이메일 형식이 올바르지 않아요.","auth/too-many-requests":"시도가 너무 많아요. 잠시 후 다시 해 주세요.","auth/network-request-failed":"인터넷 연결을 확인해 주세요.","permission-denied":"저장 권한이 없어요. Firestore 규칙을 확인해 주세요.","unavailable":"서버에 연결할 수 없어요. 인터넷을 확인해 주세요."};
+const ERR2={"auth/configuration-not-found":"Firebase에서 이메일/비밀번호 로그인이 아직 켜져 있지 않아요.","auth/operation-not-allowed":"Firebase에서 이메일/비밀번호 로그인이 아직 켜져 있지 않아요.","timeout":"서버 응답이 없어요. Firestore 데이터베이스가 만들어졌는지 확인해 주세요."};Object.assign(ERR,ERR2);
+const withTO=(p,ms=6000)=>Promise.race([p,new Promise((_,r)=>setTimeout(()=>r({code:"timeout"}),ms))]);
 const msg=e=>ERR[e&&e.code]||("오류가 발생했어요: "+(e&&(e.code||e.message)));
 window.home=function(){app.innerHTML=`<h1>김해공항 롯데렌터카<br>Gimhae Airport · 金海机场</h1>
 <button class="btn" onclick="menu('ko')">한국어</button>
@@ -36,7 +38,7 @@ window.home=function(){app.innerHTML=`<h1>김해공항 롯데렌터카<br>Gimhae
 window.menu=function(l){lang=l;const t=T[l];app.innerHTML=`<button class="back" onclick="home()">${t.back}</button><h1>${t.title}</h1>`+
 t.menu.map((m,i)=>`<button class="btn sub" onclick="page(${i})">${m}</button>`).join('')}
 window.page=async function(i){const t=T[lang],l=lang;app.innerHTML=`<button class="back" onclick="menu('${l}')">${t.back2}</button><h1>${t.menu[i]}</h1><div id="pc" style="line-height:1.6">${t.load}</div>`;
-let txt="";try{const d=await getDoc(doc(db,"pages",IDS[i]));if(d.exists())txt=(d.data()[l]||"").trim();}catch(e){}
+let txt="";try{const d=await withTO(getDoc(doc(db,"pages",IDS[i])));if(d.exists())txt=(d.data()[l]||"").trim();}catch(e){}
 const pc=document.getElementById('pc');if(pc&&lang===l)pc.innerHTML=txt?esc(txt).replace(/\n/g,"<br>"):`<p>${t.soon}</p>`}
 const inp='width:100%;padding:12px;margin:6px 0;font-size:16px;box-sizing:border-box;border:1px solid #ccc;border-radius:8px';
 window.adminEntry=()=>auth.currentUser?admin():login();
@@ -53,9 +55,9 @@ async function admin(sel=0){app.innerHTML=`<button class="back" onclick="home()"
 ${Object.keys(LN).map(k=>`<label style="font-weight:bold">${LN[k]}</label><textarea id="ta_${k}" rows="6" style="${inp}"></textarea>`).join('')}
 <button class="btn" id="sv">저장</button><p id="st"></p>`;
 const st=document.getElementById('st');document.getElementById('ps').onchange=e=>admin(+e.target.value);
-st.textContent="불러오는 중…";try{const d=await getDoc(doc(db,"pages",IDS[sel]));const v=d.exists()?d.data():{};Object.keys(LN).forEach(k=>document.getElementById('ta_'+k).value=v[k]||"");st.textContent="";}catch(e){st.textContent=msg(e);}
+st.textContent="불러오는 중…";try{const d=await withTO(getDoc(doc(db,"pages",IDS[sel])));const v=d.exists()?d.data():{};Object.keys(LN).forEach(k=>document.getElementById('ta_'+k).value=v[k]||"");st.textContent="";}catch(e){st.textContent=msg(e);}
 document.getElementById('sv').onclick=async()=>{st.style.color="#333";st.textContent="저장 중…";const data={updatedAt:serverTimestamp()};Object.keys(LN).forEach(k=>data[k]=document.getElementById('ta_'+k).value);
-try{await setDoc(doc(db,"pages",IDS[sel]),data,{merge:true});st.style.color="green";st.textContent="저장했어요 ✓";}catch(e){st.style.color="#da291c";st.textContent=msg(e);}}}
+try{await withTO(setDoc(doc(db,"pages",IDS[sel]),data,{merge:true}),10000);st.style.color="green";st.textContent="저장했어요 ✓";}catch(e){st.style.color="#da291c";st.textContent=msg(e);}}}
 window.logout=async()=>{await signOut(auth);home();};
 home();
 </script><button id="installBtn" style="display:none;position:fixed;right:16px;bottom:16px;padding:12px 18px;border:0;border-radius:24px;background:#da291c;color:#fff;font-size:15px;font-weight:bold;box-shadow:0 2px 8px rgba(0,0,0,.25);cursor:pointer;z-index:999">설치하기 / Install</button>
