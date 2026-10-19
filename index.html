@@ -37,15 +37,44 @@ box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 4px 0 #9e1a10,0 8px 16px rgba(2
 .btn.call svg{width:24px;height:24px}
 @media (min-width:760px){.shell{max-width:720px}.grid{grid-template-columns:1fr 1fr;gap:16px}.grid .btn{height:68px}.grid .btn:last-child{grid-column:1/-1}}
 @media (max-width:360px){.grid .btn{font-size:15px;padding:0 14px}}
+.adm-link{display:block;margin:8px auto 0;padding:6px 12px;border:0;background:none;font:inherit;font-size:12px;color:#aaa;cursor:pointer;text-decoration:underline}
+.inp{width:100%;height:48px;padding:0 14px;border:1px solid #d5d7dd;border-radius:12px;font:inherit;font-size:16px;background:#fff}
+.inp:focus{outline:2px solid #da291c;border-color:transparent}
+textarea.inp{height:72px;padding:10px 14px;resize:vertical}
+.err{color:#da291c;font-size:14px;margin:8px 0 0;text-align:center}
+.ok{color:#1a7f37}
+.sec{background:#fff;border-radius:16px;padding:18px;box-shadow:0 1px 2px rgba(0,0,0,.04),0 8px 24px rgba(0,0,0,.06);display:flex;flex-direction:column;gap:10px}
+.sec h3{margin:0;font-size:16px}
+.sbtn{height:48px;border:0;border-radius:12px;font:inherit;font-size:15px;font-weight:700;color:#fff;cursor:pointer;background:linear-gradient(180deg,#ef4a3a,#c4220f);box-shadow:0 3px 0 #9e1a10}
+.sbtn:disabled{opacity:.5}
+.sbtn.g{color:#333;background:#f1f2f5;box-shadow:0 3px 0 #d5d7dd}
+.frow{display:flex;gap:10px;align-items:center}
+.frow img{width:56px;height:56px;object-fit:cover;border-radius:8px;flex:none}
+.frow .inp{height:40px;font-size:14px}
+.trow{border:1px dashed #d5d7dd;border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:6px}
+.trow .inp{height:40px;font-size:14px}
+.bar{height:10px;border-radius:5px;background:#eee;overflow:hidden}.bar i{display:block;height:100%;width:0;background:#da291c;transition:width .2s}
+.ex{display:flex;gap:10px;align-items:center;padding:8px 0;border-top:1px solid #f0f0f2;font-size:14px}
+.ex img{width:44px;height:44px;object-fit:cover;border-radius:6px;flex:none}
+.ex span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.del{border:0;background:#fde9e7;color:#c4220f;border-radius:8px;height:32px;padding:0 12px;font:inherit;font-size:13px;font-weight:700;cursor:pointer}
+.bc{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.04),0 8px 24px rgba(0,0,0,.06)}
+.bc img{display:block;width:100%;height:auto;cursor:zoom-in;background:#f3f3f5}
+.bc .bt{padding:14px 18px;font-size:15px;line-height:1.6;color:#333}
+.bc .bt b{display:block;font-size:17px;color:#1d1d1f;margin-bottom:4px}
+.bc .bt div{margin-top:2px}.bc .bt em{font-style:normal;color:#888;margin-right:6px}
+.bc a.tel{color:#da291c;font-weight:700;text-decoration:none}
+#lb{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:1000;align-items:center;justify-content:center;padding:12px;cursor:zoom-out}
+#lb img{max-width:100%;max-height:100%;object-fit:contain}
 #installBtn{display:none;position:fixed;right:16px;bottom:16px;height:48px;padding:0 24px;border:0;border-radius:24px;font:inherit;font-size:15px;font-weight:700;color:#fff;cursor:pointer;z-index:999;background:linear-gradient(180deg,#ef4a3a,#c4220f);box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 3px 0 #9e1a10,0 8px 16px rgba(0,0,0,.2)}
 #installBtn:active{transform:translateY(2px);box-shadow:0 1px 0 #9e1a10}
-</style></head><body><div class="shell"><header id="hdr"><img src="images/logo.png" alt="LOTTE rent-a-car GIMHAE AIRPORT"></header><main id="app"></main></div>
+</style></head><body><div class="shell"><header id="hdr"><img src="images/logo.png" alt="LOTTE rent-a-car GIMHAE AIRPORT"></header><main id="app"></main></div><div id="lb" onclick="this.style.display='none'"><img alt=""></div>
 <script>
 const T={
-ko:{title:"메뉴를 선택하세요",menu:["김해공항 영업소 반납 안내","차량 보험 안내","관광 가이드","타지역 지점 안내","긴급출동 연결","통역서비스 연결","비짓부산"],back:"언어 선택",back2:"메뉴",soon:"내용 준비 중입니다.",call:"전화 걸기"},
-en:{title:"Select a menu",menu:["Gimhae Airport Branch Return Guide","Vehicle Insurance Guide","Tour Guide","Other Branch Locations","Emergency Roadside Assistance","Interpretation Service","Visit Busan"],back:"Language",back2:"Menu",soon:"Content coming soon.",call:"Call"},
-tw:{title:"請選擇選單",menu:["金海機場營業所還車指南","車輛保險說明","旅遊指南","其他地區分店資訊","緊急救援連線","口譯服務連線","Visit Busan 釜山旅遊"],back:"選擇語言",back2:"選單",soon:"內容準備中。",call:"撥打電話"},
-zh:{title:"请选择菜单",menu:["金海机场营业所还车指南","车辆保险说明","旅游指南","其他地区分店信息","紧急救援连线","口译服务连线","Visit Busan 釜山旅游"],back:"选择语言",back2:"菜单",soon:"内容准备中。",call:"拨打电话"}};
+ko:{title:"메뉴를 선택하세요",menu:["김해공항 영업소 반납 안내","차량 보험 안내","관광 가이드","타지역 지점 안내","긴급출동 연결","통역서비스 연결","비짓부산"],back:"언어 선택",back2:"메뉴",soon:"내용 준비 중입니다.",call:"전화 걸기",addr:"주소",tel:"전화",hours:"영업시간",loading:"불러오는 중…"},
+en:{title:"Select a menu",menu:["Gimhae Airport Branch Return Guide","Vehicle Insurance Guide","Tour Guide","Other Branch Locations","Emergency Roadside Assistance","Interpretation Service","Visit Busan"],back:"Language",back2:"Menu",soon:"Content coming soon.",call:"Call",addr:"Address",tel:"Phone",hours:"Hours",loading:"Loading…"},
+tw:{title:"請選擇選單",menu:["金海機場營業所還車指南","車輛保險說明","旅遊指南","其他地區分店資訊","緊急救援連線","口譯服務連線","Visit Busan 釜山旅遊"],back:"選擇語言",back2:"選單",soon:"內容準備中。",call:"撥打電話",addr:"地址",tel:"電話",hours:"營業時間",loading:"載入中…"},
+zh:{title:"请选择菜单",menu:["金海机场营业所还车指南","车辆保险说明","旅游指南","其他地区分店信息","紧急救援连线","口译服务连线","Visit Busan 釜山旅游"],back:"选择语言",back2:"菜单",soon:"内容准备中。",call:"拨打电话",addr:"地址",tel:"电话",hours:"营业时间",loading:"加载中…"}};
 const IDS=["return","insurance","tour","branches","emergency","interpret","visitbusan"];
 /* tel: 실제 전화 걸 번호, phone: 화면 표시용 번호. 넣으면 해당 페이지에 전화 걸기 버튼이 생깁니다. */
 const CONTENT={
@@ -72,15 +101,15 @@ const EXT=`<svg class="ext" width="16" height="16" viewBox="0 0 24 24" fill="non
 const PHONE=`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg>`;
 const ARR=`<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>`;
 const L=[["ko","한국어","Korean"],["en","English","영어"],["tw","中文 繁體","Traditional Chinese"],["zh","中文 简体","Simplified Chinese"]];
-window.home=function(){hdr.className="";app.className="center";app.innerHTML=L.map(([k,a,b])=>`<button class="btn" onclick="menu('${k}')"><span>${a}<small>${b}</small></span></button>`).join('');scrollTo(0,0)}
+window.home=function(){hdr.className="";app.className="center";app.innerHTML=L.map(([k,a,b])=>`<button class="btn" onclick="menu('${k}')"><span>${a}<small>${b}</small></span></button>`).join('')+`<button class="adm-link" onclick="admin()">관리자</button>`;scrollTo(0,0)}
 window.menu=function(l){hdr.className="small";lang=l;const t=T[l];app.className="";app.innerHTML=`<button class="back" onclick="home()">${ARR}${t.back}</button><h2 class="title">${t.title}</h2><div class="grid">`+
 t.menu.map((m,i)=>{const id=IDS[i];return LINKS[id]?`<a class="btn sub" href="${LINKS[id][l]}" target="_blank" rel="noopener">${ic(id)}<span class="lbl">${m}</span>${EXT}</a>`:`<button class="btn sub" onclick="page(${i})">${ic(id)}<span class="lbl">${m}</span></button>`}).join('')+`</div>`;scrollTo(0,0)}
 window.page=function(i){hdr.className="small";const t=T[lang],id=IDS[i],c=CONTENT[id]||{};
+if(id==="branches")return branches(i);
 const txt=(c[lang]||"").trim(),ph=(c.phone||"").trim();
 let body=txt?esc(txt).replace(/\n/g,"<br>"):(ph?"":`<p>${t.soon}</p>`);
 if(ph){const tl=(c.tel||ph).replace(/[^0-9+]/g,'');body+=`<div class="num">${esc(ph)}</div><a class="btn call" href="tel:${esc(tl)}">${PHONE}<span>${t.call}</span></a>`;}
 app.className="";app.innerHTML=`<button class="back" onclick="menu('${lang}')">${ARR}${t.back2}</button><h2 class="title">${t.menu[i]}</h2><div class="card">${body}</div>`;scrollTo(0,0)}
-home();
 </script><button id="installBtn">설치하기 / Install</button>
 <script>
 if('serviceWorker' in navigator){addEventListener('load',()=>navigator.serviceWorker.register('./sw.js'));}
@@ -88,4 +117,80 @@ let deferredPrompt;const ib=document.getElementById('installBtn');
 addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;ib.style.display='block';});
 ib.addEventListener('click',async()=>{if(!deferredPrompt)return;deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;ib.style.display='none';});
 addEventListener('appinstalled',()=>{ib.style.display='none';});
+</script>
+<script type="module">
+const FB="https://www.gstatic.com/firebasejs/10.12.2/";
+const CFG={apiKey:"AIzaSyC2zl8XARZ9ha9_aihICO4T4b1tGKi02C4",authDomain:"gimhae-lotte.firebaseapp.com",projectId:"gimhae-lotte",storageBucket:"gimhae-lotte.firebasestorage.app",messagingSenderId:"76093741699",appId:"1:76093741699:web:e30a9489803c5552da59b6"};
+const ADMIN_PW="8000";
+let fb;
+async function F(){if(fb)return fb;const[a,f,u]=await Promise.all([import(FB+"firebase-app.js"),import(FB+"firebase-firestore.js"),import(FB+"firebase-auth.js")]);
+const app=a.initializeApp(CFG);fb={f,u,db:f.getFirestore(app),auth:u.getAuth(app)};return fb}
+const timeout=(p,ms)=>Promise.race([p,new Promise((_,r)=>setTimeout(()=>r(new Error("timeout")),ms))]);
+const $=id=>document.getElementById(id);
+async function list(){const{f,db}=await F();const q=f.query(f.collection(db,"branches"),f.orderBy("createdAt"));const s=await f.getDocs(q);return s.docs.map(d=>({id:d.id,...d.data()}))}
+window.zoom=src=>{const lb=$("lb");lb.querySelector("img").src=src;lb.style.display="flex"};
+function cardHTML(b,t){const tl=(b.phone||"").replace(/[^0-9+]/g,"");
+let h=`<div class="bc">`;if(b.img)h+=`<img src="${esc(b.img)}" alt="${esc(b.title||b.name||"")}" loading="lazy" onclick="zoom(this.src)">`;
+const rows=[];if(b.title)rows.push(`<b>${esc(b.title)}</b>`);if(b.name)rows.push(`<b>${esc(b.name)}</b>`);
+if(b.address)rows.push(`<div><em>${t.addr}</em>${esc(b.address)}</div>`);
+if(b.phone)rows.push(`<div><em>${t.tel}</em><a class="tel" href="tel:${esc(tl)}">${esc(b.phone)}</a></div>`);
+if(b.hours)rows.push(`<div><em>${t.hours}</em>${esc(b.hours)}</div>`);
+if(b.memo)rows.push(`<div>${esc(b.memo).replace(/\n/g,"<br>")}</div>`);
+if(rows.length)h+=`<div class="bt">${rows.join("")}</div>`;return h+`</div>`}
+window.branches=async function(i){const t=T[lang],l=lang;app.className="";
+app.innerHTML=`<button class="back" onclick="menu('${l}')">${ARR}${t.back2}</button><h2 class="title">${t.menu[i]}</h2><div id="bl"><div class="card"><p>${t.loading}</p></div></div><button class="adm-link" onclick="admin()">관리자</button>`;scrollTo(0,0);
+let items=[];try{items=await timeout(list(),6000)}catch(e){console.warn("branches load failed",e)}
+const bl=$("bl");if(!bl||lang!==l)return;
+bl.innerHTML=items.length?`<div style="display:flex;flex-direction:column;gap:14px">${items.map(b=>cardHTML(b,t)).join("")}</div>`:`<div class="card"><p>${t.soon}</p></div>`};
+window.admin=function(){if(sessionStorage.getItem("gadm")==="1")return panel();hdr.className="small";app.className="";
+app.innerHTML=`<button class="back" onclick="home()">${ARR}처음으로</button><h2 class="title">관리자</h2><div class="sec"><h3>비밀번호를 입력하세요</h3><input id="pw" class="inp" type="password" inputmode="numeric" autocomplete="current-password" placeholder="비밀번호"><button class="sbtn" id="pwb">들어가기</button><div id="pwe" class="err"></div></div>`;
+const go=()=>{if($("pw").value===ADMIN_PW){sessionStorage.setItem("gadm","1");panel()}else{$("pwe").textContent="비밀번호가 올바르지 않습니다.";$("pw").value="";$("pw").focus()}};
+$("pwb").onclick=go;$("pw").onkeydown=e=>{if(e.key==="Enter")go()};$("pw").focus()};
+const ERR={"auth/admin-restricted-operation":"Firebase에서 '익명 로그인'이 꺼져 있습니다. (Authentication > 로그인 방법 > 익명 사용 설정)","auth/operation-not-allowed":"Firebase에서 '익명 로그인'이 꺼져 있습니다. (Authentication > 로그인 방법 > 익명 사용 설정)","permission-denied":"저장 권한이 없습니다. Firestore 규칙을 게시했는지 확인하세요."};
+const emsg=e=>(ERR[e&&e.code]||"오류가 발생했습니다")+` [${(e&&(e.code||e.message))||e}]`;
+async function signIn(){const{u,auth}=await F();if(auth.currentUser)return auth.currentUser;const r=await u.signInAnonymously(auth);return r.user}
+function compress(file){return new Promise((res,rej)=>{const url=URL.createObjectURL(file);const im=new Image();im.onload=()=>{URL.revokeObjectURL(url);
+let max=1600,q=.82,out;const cv=document.createElement("canvas"),cx=cv.getContext("2d");
+for(let k=0;k<12;k++){const sc=Math.min(1,max/Math.max(im.naturalWidth,im.naturalHeight));cv.width=Math.round(im.naturalWidth*sc);cv.height=Math.round(im.naturalHeight*sc);
+cx.fillStyle="#fff";cx.fillRect(0,0,cv.width,cv.height);cx.drawImage(im,0,0,cv.width,cv.height);out=cv.toDataURL("image/jpeg",q);if(out.length<750000)return res(out);
+if(q>.6)q-=.1;else max=Math.round(max*.8)}res(out)};im.onerror=()=>{URL.revokeObjectURL(url);rej(new Error("이미지를 읽을 수 없습니다: "+file.name))};im.src=url})}
+let picked=[];
+async function refresh(){const box=$("exl");if(!box)return;box.innerHTML=`<div style="color:#888;font-size:14px">불러오는 중…</div>`;
+try{const items=await timeout(list(),8000);$("exn").textContent=items.length;
+box.innerHTML=items.length?items.map(b=>`<div class="ex">${b.img?`<img src="${esc(b.img)}" alt="">`:""}<span>${esc(b.title||b.name||"(제목 없음)")}${b.address?" · "+esc(b.address):""}</span><button class="del" data-id="${b.id}">삭제</button></div>`).join(""):`<div style="color:#888;font-size:14px">등록된 항목이 없습니다.</div>`;
+box.querySelectorAll(".del").forEach(btn=>btn.onclick=async()=>{if(!confirm("이 항목을 삭제할까요?"))return;btn.disabled=true;try{const{f,db}=await F();await signIn();await f.deleteDoc(f.doc(db,"branches",btn.dataset.id));refresh()}catch(e){alert(emsg(e));btn.disabled=false}})}
+catch(e){box.innerHTML=`<div class="err">${esc(emsg(e))}</div>`}}
+function trow(){const d=document.createElement("div");d.className="trow";d.innerHTML=`<input class="inp" data-k="name" placeholder="지점명 (필수)"><input class="inp" data-k="address" placeholder="주소"><input class="inp" data-k="phone" type="tel" placeholder="전화번호"><input class="inp" data-k="hours" placeholder="영업시간"><textarea class="inp" data-k="memo" placeholder="메모"></textarea>`;return d}
+async function panel(){hdr.className="small";app.className="";
+app.innerHTML=`<button class="back" onclick="home()">${ARR}처음으로</button><h2 class="title">타지역 지점 안내 · 관리</h2>
+<div id="st" style="font-size:13px;color:#888;text-align:center">Firebase 연결 중…</div>
+<div class="sec"><h3>사진 올리기 (여러 장 한 번에)</h3><input id="files" type="file" accept="image/jpeg,image/png" multiple style="display:none"><button class="sbtn g" id="pick">사진 선택 (jpg, png)</button><div id="fl" style="display:flex;flex-direction:column;gap:8px"></div><button class="sbtn" id="up" disabled>사진 업로드</button></div>
+<div class="sec"><h3>글로 지점 추가</h3><div id="tl" style="display:flex;flex-direction:column;gap:10px"></div><button class="sbtn g" id="addrow">+ 지점 한 칸 더</button><button class="sbtn" id="savet">지점 저장</button></div>
+<div class="sec"><div class="bar" id="bar" style="display:none"><i></i></div><div id="prog" style="font-size:14px;text-align:center"></div><h3>등록된 항목 (<span id="exn">0</span>)</h3><div id="exl"></div></div>
+<button class="adm-link" onclick="sessionStorage.removeItem('gadm');home()">로그아웃</button>`;scrollTo(0,0);
+picked=[];$("tl").appendChild(trow());
+$("pick").onclick=()=>$("files").click();
+$("files").onchange=e=>{for(const f of e.target.files){if(!/image\/(jpeg|png)/.test(f.type))continue;picked.push({file:f,url:URL.createObjectURL(f),title:f.name.replace(/\.[^.]+$/,"")})}e.target.value="";drawPicked()};
+$("addrow").onclick=()=>$("tl").appendChild(trow());
+$("up").onclick=uploadImgs;$("savet").onclick=saveTexts;
+try{const usr=await timeout(signIn(),10000);$("st").innerHTML=`<span class="ok">● 연결됨</span>`;window.__anonUid=usr.uid}catch(e){$("st").innerHTML=`<span class="err">${esc(emsg(e))}</span>`;window.__anonErr=e.code||e.message}
+refresh()}
+function drawPicked(){const fl=$("fl");fl.innerHTML="";picked.forEach((p,i)=>{const r=document.createElement("div");r.className="frow";r.innerHTML=`<img src="${p.url}" alt=""><input class="inp" placeholder="제목 (선택)" value="${esc(p.title)}"><button class="del">빼기</button>`;
+r.querySelector("input").oninput=e=>p.title=e.target.value;r.querySelector("button").onclick=()=>{picked.splice(i,1);drawPicked()};fl.appendChild(r)});
+$("up").disabled=!picked.length;$("up").textContent=picked.length?`사진 ${picked.length}장 업로드`:"사진 업로드"}
+function prog(done,total,msg){const b=$("bar");b.style.display="block";b.firstChild.style.width=(total?done/total*100:0)+"%";$("prog").innerHTML=msg}
+async function uploadImgs(){const btn=$("up");btn.disabled=true;const{f,db}=await F();let ok=0,fail=[];const n=picked.length;
+try{await signIn()}catch(e){prog(0,n,`<span class="err">${esc(emsg(e))}</span>`);btn.disabled=false;return}
+for(let i=0;i<n;i++){const p=picked[i];prog(i,n,`업로드 중… ${i+1} / ${n}`);
+try{const img=await compress(p.file);await f.addDoc(f.collection(db,"branches"),{type:"image",title:(p.title||"").trim(),img,createdAt:f.serverTimestamp()});ok++}catch(e){fail.push(p.file.name+": "+emsg(e))}}
+prog(n,n,`완료: ${ok}장 성공`+(fail.length?`<div class="err">${fail.length}장 실패<br>${fail.map(esc).join("<br>")}</div>`:""));
+picked=picked.filter((p,i)=>false);drawPicked();refresh()}
+async function saveTexts(){const rows=[...$("tl").querySelectorAll(".trow")].map(r=>{const o={};r.querySelectorAll("[data-k]").forEach(x=>o[x.dataset.k]=x.value.trim());return o}).filter(o=>o.name);
+if(!rows.length){prog(0,0,`<span class="err">지점명을 입력하세요.</span>`);return}
+const btn=$("savet");btn.disabled=true;const{f,db}=await F();let ok=0,fail=[];
+try{await signIn()}catch(e){prog(0,rows.length,`<span class="err">${esc(emsg(e))}</span>`);btn.disabled=false;return}
+for(let i=0;i<rows.length;i++){prog(i,rows.length,`저장 중… ${i+1} / ${rows.length}`);try{await f.addDoc(f.collection(db,"branches"),{type:"text",...rows[i],createdAt:f.serverTimestamp()});ok++}catch(e){fail.push(rows[i].name+": "+emsg(e))}}
+prog(rows.length,rows.length,`완료: ${ok}개 저장`+(fail.length?`<div class="err">${fail.map(esc).join("<br>")}</div>`:""));
+btn.disabled=false;if(ok){$("tl").innerHTML="";$("tl").appendChild(trow())}refresh()}
+home();
 </script></body></html>
