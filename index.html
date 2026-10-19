@@ -32,7 +32,9 @@ box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 4px 0 #9e1a10,0 8px 16px rgba(2
 .grid .btn .ic svg{width:20px;height:20px}
 .lbl{flex:1;min-width:0}
 .ext{flex:none;color:#da291c;opacity:.8}
-.btn.call{justify-content:center;margin-top:16px;height:56px;text-decoration:none;font-size:17px}
+.num{text-align:center;font-size:30px;font-weight:700;color:#1d1d1f;letter-spacing:.01em;margin:8px 0 4px}
+.btn.call{justify-content:center;margin-top:20px;height:64px;text-decoration:none;font-size:20px;font-weight:700;gap:12px}
+.btn.call svg{width:24px;height:24px}
 @media (min-width:760px){.shell{max-width:720px}.grid{grid-template-columns:1fr 1fr;gap:16px}.grid .btn{height:68px}.grid .btn:last-child{grid-column:1/-1}}
 @media (max-width:360px){.grid .btn{font-size:15px;padding:0 14px}}
 #installBtn{display:none;position:fixed;right:16px;bottom:16px;height:48px;padding:0 24px;border:0;border-radius:24px;font:inherit;font-size:15px;font-weight:700;color:#fff;cursor:pointer;z-index:999;background:linear-gradient(180deg,#ef4a3a,#c4220f);box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 3px 0 #9e1a10,0 8px 16px rgba(0,0,0,.2)}
@@ -40,19 +42,19 @@ box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 4px 0 #9e1a10,0 8px 16px rgba(2
 </style></head><body><div class="shell"><header id="hdr"><img src="images/logo.png" alt="LOTTE rent-a-car GIMHAE AIRPORT"></header><main id="app"></main></div>
 <script>
 const T={
-ko:{title:"메뉴를 선택하세요",menu:["김해공항 영업소 반납 안내","차량 보험 안내","관광 가이드","타지역 지점 안내","긴급출동 연결","통역서비스 연결","비짓부산"],back:"언어 선택",back2:"메뉴",soon:"내용 준비 중입니다.",call:"전화 연결"},
+ko:{title:"메뉴를 선택하세요",menu:["김해공항 영업소 반납 안내","차량 보험 안내","관광 가이드","타지역 지점 안내","긴급출동 연결","통역서비스 연결","비짓부산"],back:"언어 선택",back2:"메뉴",soon:"내용 준비 중입니다.",call:"전화 걸기"},
 en:{title:"Select a menu",menu:["Gimhae Airport Branch Return Guide","Vehicle Insurance Guide","Tour Guide","Other Branch Locations","Emergency Roadside Assistance","Interpretation Service","Visit Busan"],back:"Language",back2:"Menu",soon:"Content coming soon.",call:"Call"},
 tw:{title:"請選擇選單",menu:["金海機場營業所還車指南","車輛保險說明","旅遊指南","其他地區分店資訊","緊急救援連線","口譯服務連線","Visit Busan 釜山旅遊"],back:"選擇語言",back2:"選單",soon:"內容準備中。",call:"撥打電話"},
 zh:{title:"请选择菜单",menu:["金海机场营业所还车指南","车辆保险说明","旅游指南","其他地区分店信息","紧急救援连线","口译服务连线","Visit Busan 釜山旅游"],back:"选择语言",back2:"菜单",soon:"内容准备中。",call:"拨打电话"}};
 const IDS=["return","insurance","tour","branches","emergency","interpret","visitbusan"];
-/* phone: 번호를 넣으면 (예: "1588-0000") 해당 페이지에 전화 걸기 버튼이 생깁니다. */
+/* tel: 실제 전화 걸 번호, phone: 화면 표시용 번호. 넣으면 해당 페이지에 전화 걸기 버튼이 생깁니다. */
 const CONTENT={
 return:{ko:"",en:"",tw:"",zh:""},
 insurance:{ko:"",en:"",tw:"",zh:""},
 tour:{ko:"",en:"",tw:"",zh:""},
 branches:{ko:"",en:"",tw:"",zh:""},
-emergency:{phone:"",ko:"",en:"",tw:"",zh:""},
-interpret:{phone:"",ko:"",en:"",tw:"",zh:""}
+emergency:{tel:"+8215881230",phone:"+82 1588-1230",ko:"",en:"",tw:"",zh:""},
+interpret:{tel:"+8221330",phone:"+82 2-1330",ko:"",en:"",tw:"",zh:""}
 };
 const LINKS={visitbusan:{ko:"https://www.visitbusan.net/kr/index.do",en:"https://www.visitbusan.net/en/index.do",tw:"https://www.visitbusan.net/zht/index.do",zh:"https://www.visitbusan.net/zhs/index.do"}};
 const esc=x=>String(x).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -76,7 +78,7 @@ t.menu.map((m,i)=>{const id=IDS[i];return LINKS[id]?`<a class="btn sub" href="${
 window.page=function(i){hdr.className="small";const t=T[lang],id=IDS[i],c=CONTENT[id]||{};
 const txt=(c[lang]||"").trim(),ph=(c.phone||"").trim();
 let body=txt?esc(txt).replace(/\n/g,"<br>"):(ph?"":`<p>${t.soon}</p>`);
-if(ph)body+=`<a class="btn call" href="tel:${esc(ph.replace(/[^0-9+]/g,''))}">${PHONE}<span>${t.call} ${esc(ph)}</span></a>`;
+if(ph){const tl=(c.tel||ph).replace(/[^0-9+]/g,'');body+=`<div class="num">${esc(ph)}</div><a class="btn call" href="tel:${esc(tl)}">${PHONE}<span>${t.call}</span></a>`;}
 app.className="";app.innerHTML=`<button class="back" onclick="menu('${lang}')">${ARR}${t.back2}</button><h2 class="title">${t.menu[i]}</h2><div class="card">${body}</div>`;scrollTo(0,0)}
 home();
 </script><button id="installBtn">설치하기 / Install</button>
