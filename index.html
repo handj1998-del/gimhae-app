@@ -2,21 +2,38 @@
 <html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#da291c"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><link rel="icon" href="icons/icon-192.png">
 <title>김해공항 롯데렌터카 안내</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;600;700&family=Noto+Sans+TC:wght@400;600;700&display=swap">
 <style>
-body{margin:0;font-family:sans-serif;background:#f4f4f6;color:#222}
-.wrap{max-width:480px;margin:0 auto;min-height:100vh;background:#fff;padding:24px;box-sizing:border-box}
-h1{color:#da291c;font-size:22px;text-align:center}
-.btn{display:block;width:100%;padding:18px;margin:12px 0;font-size:18px;border:none;border-radius:12px;background:#da291c;color:#fff;cursor:pointer}
-.btn.sub{background:#fff;color:#da291c;border:2px solid #da291c}
-.back{background:none;border:none;color:#666;font-size:15px;cursor:pointer;padding:0}
-.hidden{display:none}
-</style></head><body><div class="wrap" id="app"></div>
+*{box-sizing:border-box}
+body{margin:0;font-family:"Pretendard Variable",Pretendard,"Noto Sans TC","Noto Sans SC",-apple-system,system-ui,sans-serif;background:linear-gradient(180deg,#eceef2,#f7f7f9);color:#1d1d1f;-webkit-font-smoothing:antialiased;letter-spacing:-.01em}
+.shell{max-width:480px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;background:#fafafb;box-shadow:0 0 40px rgba(0,0,0,.06)}
+header{background:linear-gradient(135deg,#e8402f,#da291c 55%,#b81f14);color:#fff;padding:32px 24px 40px;border-radius:0 0 24px 24px;text-align:center;box-shadow:0 8px 24px rgba(218,41,28,.25)}
+header h1{margin:0;font-size:24px;font-weight:700;letter-spacing:-.02em}
+header p{margin:8px 0 0;font-size:13px;opacity:.85;font-weight:500;letter-spacing:.04em}
+#app{flex:1;display:flex;flex-direction:column;padding:24px;gap:16px}
+#app.center{justify-content:center}
+.title{margin:8px 0;font-size:20px;font-weight:700;text-align:center}
+.btn{display:flex;align-items:center;gap:16px;width:100%;height:72px;padding:0 24px;border:0;border-radius:16px;font:inherit;font-size:18px;font-weight:600;cursor:pointer;text-align:left;color:#fff;
+background:linear-gradient(180deg,#ef4a3a,#da291c 60%,#c4220f);
+box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 4px 0 #9e1a10,0 8px 16px rgba(218,41,28,.28);transition:transform .08s,box-shadow .08s}
+.btn:active{transform:translateY(3px);box-shadow:inset 0 1px 0 rgba(255,255,255,.25),0 1px 0 #9e1a10,0 3px 8px rgba(218,41,28,.25)}
+.btn small{display:block;font-size:12px;font-weight:500;opacity:.8;margin-top:2px}
+.btn.sub{color:#1d1d1f;background:linear-gradient(180deg,#fff,#f1f2f5);box-shadow:inset 0 1px 0 #fff,0 4px 0 #d5d7dd,0 8px 16px rgba(0,0,0,.08)}
+.btn.sub:active{box-shadow:inset 0 1px 0 #fff,0 1px 0 #d5d7dd,0 3px 6px rgba(0,0,0,.08)}
+.ic{width:40px;height:40px;flex:none;border-radius:12px;display:grid;place-items:center;background:linear-gradient(180deg,#fde9e7,#f9d4d0);color:#da291c}
+.back{align-self:flex-start;display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 16px;border:0;border-radius:20px;font:inherit;font-size:14px;font-weight:600;color:#444;background:#fff;box-shadow:0 2px 0 #dcdde2,0 4px 8px rgba(0,0,0,.06);cursor:pointer}
+.back:active{transform:translateY(2px);box-shadow:0 0 0 #dcdde2}
+.card{background:#fff;border-radius:16px;padding:24px;box-shadow:0 1px 2px rgba(0,0,0,.04),0 8px 24px rgba(0,0,0,.06);font-size:16px;line-height:1.75;color:#333}
+.card p{margin:0;color:#888;text-align:center}
+#installBtn{display:none;position:fixed;right:16px;bottom:16px;height:48px;padding:0 24px;border:0;border-radius:24px;font:inherit;font-size:15px;font-weight:700;color:#fff;cursor:pointer;z-index:999;background:linear-gradient(180deg,#ef4a3a,#c4220f);box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 3px 0 #9e1a10,0 8px 16px rgba(0,0,0,.2)}
+#installBtn:active{transform:translateY(2px);box-shadow:0 1px 0 #9e1a10}
+</style></head><body><div class="shell"><header><h1>김해공항 롯데렌터카</h1><p>Gimhae Airport · 金海機場</p></header><main id="app"></main></div>
 <script>
 const T={
-ko:{title:"메뉴를 선택하세요",menu:["렌터카 반납 안내","보험 안내","관광 가이드"],back:"← 언어 선택",back2:"← 메뉴",soon:"내용 준비 중입니다."},
-en:{title:"Select a menu",menu:["Car Return Guide","Insurance Info","Tour Guide"],back:"← Language",back2:"← Menu",soon:"Content coming soon."},
-zh:{title:"请选择菜单",menu:["还车指南","保险说明","旅游指南"],back:"← 选择语言",back2:"← 菜单",soon:"内容准备中。"},
-tw:{title:"請選擇選單",menu:["還車指南","保險說明","旅遊指南"],back:"← 選擇語言",back2:"← 選單",soon:"內容準備中。"}};
+ko:{lt:"한국어",title:"메뉴를 선택하세요",menu:["렌터카 반납 안내","보험 안내","관광 가이드"],back:"언어 선택",back2:"메뉴",soon:"내용 준비 중입니다."},
+en:{title:"Select a menu",menu:["Car Return Guide","Insurance Info","Tour Guide"],back:"Language",back2:"Menu",soon:"Content coming soon."},
+zh:{title:"请选择菜单",menu:["还车指南","保险说明","旅游指南"],back:"选择语言",back2:"菜单",soon:"内容准备中。"},
+tw:{title:"請選擇選單",menu:["還車指南","保險說明","旅遊指南"],back:"選擇語言",back2:"選單",soon:"內容準備中。"}};
 const IDS=["return","insurance","tour"];
 const CONTENT={
 return:{ko:"",en:"",tw:"",zh:""},
@@ -25,19 +42,19 @@ tour:{ko:"",en:"",tw:"",zh:""}
 };
 const esc=x=>String(x).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const app=document.getElementById('app');let lang;
-window.home=function(){app.innerHTML=`<h1>김해공항 롯데렌터카<br>Gimhae Airport · 金海机场</h1>
-<button class="btn" onclick="menu('ko')">한국어</button>
-<button class="btn" onclick="menu('en')">English</button>
-<button class="btn" onclick="menu('tw')">中文(繁體)</button>
-<button class="btn" onclick="menu('zh')">中文(简体)</button>`}
-window.menu=function(l){lang=l;const t=T[l];app.innerHTML=`<button class="back" onclick="home()">${t.back}</button><h1>${t.title}</h1>`+
-t.menu.map((m,i)=>`<button class="btn sub" onclick="page(${i})">${m}</button>`).join('')}
+const SVG=["<path d='M5 17h14M6 17v2M18 17v2M4 13l2-5h12l2 5v4H4z'/><circle cx='8' cy='14' r='1'/><circle cx='16' cy='14' r='1'/>","<path d='M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z'/><path d='M9 12l2 2 4-4'/>","<path d='M9 4L3 6v14l6-2 6 2 6-2V4l-6 2z'/><path d='M9 4v14M15 6v14'/>"];
+const ic=i=>`<span class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${SVG[i]}</svg></span>`;
+const ARR=`<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>`;
+const L=[["ko","한국어","Korean"],["en","English","영어"],["tw","中文 繁體","Traditional Chinese"],["zh","中文 简体","Simplified Chinese"]];
+window.home=function(){app.className="center";app.innerHTML=L.map(([k,a,b])=>`<button class="btn" onclick="menu('${k}')"><span>${a}<small>${b}</small></span></button>`).join('');scrollTo(0,0)}
+window.menu=function(l){lang=l;const t=T[l];app.className="";app.innerHTML=`<button class="back" onclick="home()">${ARR}${t.back}</button><h2 class="title">${t.title}</h2>`+
+t.menu.map((m,i)=>`<button class="btn sub" onclick="page(${i})">${ic(i)}${m}</button>`).join('');scrollTo(0,0)}
 window.page=function(i){const t=T[lang],id=IDS[i];
 const txt=((CONTENT[id]&&CONTENT[id][lang])||"").trim();
 const body=txt?esc(txt).replace(/\n/g,"<br>"):`<p>${t.soon}</p>`;
-app.innerHTML=`<button class="back" onclick="menu('${lang}')">${t.back2}</button><h1>${t.menu[i]}</h1><div style="line-height:1.6">${body}</div>`}
+app.className="";app.innerHTML=`<button class="back" onclick="menu('${lang}')">${ARR}${t.back2}</button><h2 class="title">${t.menu[i]}</h2><div class="card">${body}</div>`;scrollTo(0,0)}
 home();
-</script><button id="installBtn" style="display:none;position:fixed;right:16px;bottom:16px;padding:12px 18px;border:0;border-radius:24px;background:#da291c;color:#fff;font-size:15px;font-weight:bold;box-shadow:0 2px 8px rgba(0,0,0,.25);cursor:pointer;z-index:999">설치하기 / Install</button>
+</script><button id="installBtn">설치하기 / Install</button>
 <script>
 if('serviceWorker' in navigator){addEventListener('load',()=>navigator.serviceWorker.register('./sw.js'));}
 let deferredPrompt;const ib=document.getElementById('installBtn');
