@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>김해공항 롯데렌터카 안내</title>
+<style>
+body{margin:0;font-family:sans-serif;background:#f4f4f6;color:#222}
+.wrap{max-width:480px;margin:0 auto;min-height:100vh;background:#fff;padding:24px;box-sizing:border-box}
+h1{color:#da291c;font-size:22px;text-align:center}
+.btn{display:block;width:100%;padding:18px;margin:12px 0;font-size:18px;border:none;border-radius:12px;background:#da291c;color:#fff;cursor:pointer}
+.btn.sub{background:#fff;color:#da291c;border:2px solid #da291c}
+.back{background:none;border:none;color:#666;font-size:15px;cursor:pointer;padding:0}
+.hidden{display:none}
+</style></head><body><div class="wrap" id="app"></div>
+<script>
+const T={
+ko:{title:"메뉴를 선택하세요",menu:["렌터카 반납 안내","보험 안내","관광 가이드"],back:"← 언어 선택",back2:"← 메뉴",soon:"내용 준비 중입니다."},
+en:{title:"Select a menu",menu:["Car Return Guide","Insurance Info","Tour Guide"],back:"← Language",back2:"← Menu",soon:"Content coming soon."},
+zh:{title:"请选择菜单",menu:["还车指南","保险说明","旅游指南"],back:"← 选择语言",back2:"← 菜单",soon:"内容准备中。"},
+tw:{title:"請選擇選單",menu:["還車指南","保險說明","旅遊指南"],back:"← 選擇語言",back2:"← 選單",soon:"內容準備中。"}};
+const app=document.getElementById('app');let lang;
+function home(){app.innerHTML=`<h1>김해공항 롯데렌터카<br>Gimhae Airport · 金海机场</h1>
+<button class="btn" onclick="menu('ko')">한국어</button>
+<button class="btn" onclick="menu('en')">English</button>
+<button class="btn" onclick="menu('tw')">中文(繁體)</button>
+<button class="btn" onclick="menu('zh')">中文(简体)</button>`}
+function menu(l){lang=l;const t=T[l];app.innerHTML=`<button class="back" onclick="home()">${t.back}</button><h1>${t.title}</h1>`+
+t.menu.map((m,i)=>`<button class="btn sub" onclick="page(${i})">${m}</button>`).join('')}
+function page(i){const t=T[lang];app.innerHTML=`<button class="back" onclick="menu('${lang}')">${t.back2}</button><h1>${t.menu[i]}</h1><p>${t.soon}</p>`}
+home();
+</script></body></html>
