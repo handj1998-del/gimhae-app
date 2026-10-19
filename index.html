@@ -92,7 +92,7 @@ textarea.inp{height:72px;padding:10px 14px;resize:vertical}
 #lb img{max-width:100%;max-height:100%;object-fit:contain}
 #installBtn{display:none;position:fixed;right:16px;bottom:16px;height:48px;padding:0 24px;border:0;border-radius:24px;font:inherit;font-size:15px;font-weight:700;color:#fff;cursor:pointer;z-index:999;background:linear-gradient(180deg,#ef4a3a,#c4220f);box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 3px 0 #9e1a10,0 8px 16px rgba(0,0,0,.2)}
 #installBtn:active{transform:translateY(2px);box-shadow:0 1px 0 #9e1a10}
-</style></head><body><div class="shell"><header id="hdr"><img src="images/logo.png" alt="LOTTE rent-a-car GIMHAE AIRPORT"></header><main id="app"></main></div><div id="bm" onclick="if(event.target===this)closeB()"><div class="mb" role="dialog" aria-modal="true"><div class="mh"><h3 id="bmt"></h3><button class="x" id="bmx" onclick="closeB()" aria-label="close">✕</button></div><div id="bmc"></div></div></div><div id="lb" onclick="this.style.display='none'"><img alt=""></div>
+.gd{margin:0 14px 14px;padding:14px 16px;background:#fff5f5;border:1px solid #f3d0d0;border-radius:12px;font-size:14.5px;line-height:1.65;color:#333;text-align:left}.gd h4{margin:0 0 8px;font-size:15px;color:#d1121f}.i18{margin:8px 0;border:1px solid #ddd;border-radius:10px;padding:8px 10px;text-align:left}.i18 summary{cursor:pointer;font-weight:600;font-size:14px}.i18 fieldset{border:1px solid #eee;border-radius:8px;margin:8px 0;padding:6px 8px;display:flex;flex-direction:column;gap:6px}.i18 legend{font-size:13px;color:#d1121f}.i18n-note{font-size:12.5px;color:#666;margin:6px 0}</style></head><body><div class="shell"><header id="hdr"><img src="images/logo.png" alt="LOTTE rent-a-car GIMHAE AIRPORT"></header><main id="app"></main></div><div id="bm" onclick="if(event.target===this)closeB()"><div class="mb" role="dialog" aria-modal="true"><div class="mh"><h3 id="bmt"></h3><button class="x" id="bmx" onclick="closeB()" aria-label="close">✕</button></div><div id="bmc"></div></div></div><div id="lb" onclick="this.style.display='none'"><img alt=""></div>
 <script>
 const T={
 ko:{title:"메뉴를 선택하세요",menu:["김해공항 영업소 반납 안내","차량 보험 안내","관광 가이드","타지역 지점 안내","긴급출동 연결","통역서비스 연결","비짓부산"],back:"언어 선택",back2:"메뉴",soon:"내용 준비 중입니다.",call:"전화 걸기",addr:"주소",tel:"전화",hours:"영업시간",loading:"불러오는 중…",search:"지점명 검색",close:"닫기",noimg:"이미지가 없습니다.",nores:"검색 결과가 없습니다.",count:"개 지점"},
@@ -156,12 +156,14 @@ window.zoom=src=>{const lb=$("lb");lb.querySelector("img").src=src;lb.style.disp
 function cardHTML(b,t){const tl=(b.phone||"").replace(/[^0-9+]/g,"");
 let h=`<div class="bc">`;if(b.img)h+=`<img src="${esc(b.img)}" alt="${esc(b.title||b.name||"")}" loading="lazy" onclick="zoom(this.src)">`;
 const rows=[];if(b.title)rows.push(`<b>${esc(b.title)}</b>`);if(b.name)rows.push(`<b>${esc(b.name)}</b>`);
-if(b.address)rows.push(`<div><em>${t.addr}</em>${esc(b.address)}<a class="map" target="_blank" rel="noopener" href="https://map.naver.com/p/search/${encodeURIComponent(b.address)}">${MAPL[lang]||MAPL.ko}</a></div>`);
+if(b.address)rows.push(`<div><em>${t.addr}</em>${esc(b.address)}<a class="map" target="_blank" rel="noopener" href="https://map.naver.com/p/search/${encodeURIComponent(b._ka||b.address)}">${MAPL[lang]||MAPL.ko}</a></div>`);
 if(b.phone)rows.push(`<div><em>${t.tel}</em><a class="tel" href="tel:${esc(tl)}">${esc(b.phone)}</a></div>`);
 if(b.hours)rows.push(`<div><em>${t.hours}</em>${esc(b.hours)}</div>`);
 if(b.memo&&b.type!=="image")rows.push(`<div>${esc(b.memo).replace(/\n/g,"<br>")}</div>`);
 if(rows.length)h+=`<div class="bt">${rows.join("")}</div>`;return h+`</div>`}
 const PINI=`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${SVG.branches}</svg>`;
+const GL={ko:"안내 내용",en:"Guide",tw:"說明",zh:"说明"};
+const LZ=b=>{const I=b.i18n||{},x=I[lang]||{},k=I.ko||{};return{name:x.name||"",address:x.address||"",hours:x.hours||"",text:x.text||(lang==="ko"?k.text||"":"")}};
 let BR=[];const bname=b=>(b.name||b.title||"").trim()||"—";
 const GEN=/고객\s*안내문\s*[\(（]?\s*반납\s*[\)）]?|반납\s*장소\s*안내문|편도\s*반납\s*안내문|반납\s*안내문|안내문/g;
 function short(b){const n=bname(b);let main=n,sub="";const m=n.match(/^\s*[\[(（【]\s*([^\])）】]+?)\s*[\])）】]\s*(.*)$/);
@@ -169,11 +171,12 @@ if(m){main=m[1].trim();sub=m[2]}else{sub="";main=n}
 if(!m){const x=n.replace(GEN," ").replace(/\s+/g," ").trim();if(x)main=x}
 sub=sub.replace(GEN," ").replace(/^\s*[\(（]?\d{4}[.\-]\d{1,2}[.\-]\d{1,2}[\)）]?\s*$/,"").replace(/\s+/g," ").trim();return{main,sub}}
 function drawBL(q){const bl=$("bll");if(!bl)return;const t=T[lang],k=(q||"").trim().toLowerCase();
-const xs=BR.filter(b=>!k||bname(b).toLowerCase().includes(k)||(b.address||"").toLowerCase().includes(k));
+const xs=BR.filter(b=>{if(!k)return true;const I=b.i18n||{};return[bname(b),b.address,b._s.main,...Object.values(I).flatMap(v=>[v&&v.name,v&&v.address])].some(v=>(v||"").toLowerCase().includes(k))});
 bl.innerHTML=xs.length?xs.map(b=>`<button class="brow" data-id="${esc(b.id)}"><span class="pin">${PINI}</span><span class="nm">${esc(b._s.main)}${b._s.sub?`<small>${esc(b._s.sub)}</small>`:""}</span><span class="chev">${ARR}</span></button>`).join(""):`<div class="card"><p>${t.nores}</p></div>`;
 bl.querySelectorAll(".brow").forEach(x=>x.onclick=()=>openB(x.dataset.id))}
-window.openB=id=>{const b=BR.find(x=>x.id===id);if(!b)return;const t=T[lang];$("bmt").textContent=bname(b);$("bmx").setAttribute("aria-label",t.close);$("bmx").title=t.close;
-let h=cardHTML({...b,name:"",title:""},t);if(!b.img)h=h.replace('<div class="bc">',`<div class="bc"><div class="noimg">${t.noimg}</div>`);
+window.openB=id=>{const b=BR.find(x=>x.id===id);if(!b)return;const t=T[lang];const z=LZ(b);$("bmt").textContent=z.name||bname(b);$("bmx").setAttribute("aria-label",t.close);$("bmx").title=t.close;
+let h=cardHTML({...b,name:"",title:"",address:z.address||b.address,hours:z.hours||b.hours,_ka:b.address||((b.i18n||{}).ko||{}).address||""},t);
+if(z.text)h=h.replace(/<\/div>$/,`<div class="gd"><h4>${GL[lang]||GL.ko}</h4><div>${esc(z.text).replace(/\n/g,"<br>")}</div></div></div>`);if(!b.img)h=h.replace('<div class="bc">',`<div class="bc"><div class="noimg">${t.noimg}</div>`);
 $("bmc").innerHTML=h;const m=$("bm");m.style.display="flex";m.querySelector(".mb").scrollTop=0;document.body.style.overflow="hidden";if(history.state!=="bm")history.pushState("bm","")};
 window.closeB=(fromPop)=>{const m=$("bm");if(m.style.display!=="flex")return;m.style.display="none";$("lb").style.display="none";document.body.style.overflow="";if(!fromPop&&history.state==="bm")history.back()};
 addEventListener("popstate",()=>closeB(true));addEventListener("keydown",e=>{if(e.key==="Escape"){if($("lb").style.display==="flex")$("lb").style.display="none";else closeB()}});
@@ -181,7 +184,7 @@ window.branches=async function(i){const t=T[lang],l=lang;app.className="";
 app.innerHTML=`<button class="back" onclick="menu('${l}')">${ARR}${t.back2}</button><h2 class="title">${t.menu[i]}</h2><div id="bl"><div class="card"><p>${t.loading}</p></div></div><button class="adm-link" onclick="admin()">관리자</button>`;scrollTo(0,0);
 let items=[];try{items=await timeout(list(),6000)}catch(e){console.warn("branches load failed",e)}
 const bl=$("bl");if(!bl||lang!==l)return;
-items.forEach(b=>b._s=short(b));BR=items.sort((a,b)=>a._s.main.localeCompare(b._s.main,"ko",{numeric:true})||a._s.sub.localeCompare(b._s.sub,"ko",{numeric:true}));
+const LC={ko:"ko",en:"en",tw:"zh-Hant",zh:"zh-Hans"}[l];items.forEach(b=>{const z=LZ(b);b._s=z.name?{main:z.name,sub:""}:short(b)});BR=items.sort((a,b)=>a._s.main.localeCompare(b._s.main,LC,{numeric:true})||a._s.sub.localeCompare(b._s.sub,LC,{numeric:true}));
 if(!BR.length){bl.innerHTML=`<div class="card"><p>${t.soon}</p></div>`;return}
 bl.style.cssText="display:flex;flex-direction:column;gap:12px";bl.innerHTML=(BR.length>10?`<input class="inp srch" id="bq" type="search" placeholder="${t.search}" autocomplete="off">`:"")+`<div class="bcnt">${BR.length}${t.count}</div><div class="blist" id="bll"></div>`;
 if($("bq"))$("bq").oninput=e=>drawBL(e.target.value);drawBL("")};
@@ -226,10 +229,11 @@ function editForm(btn){const row=btn.closest(".ex"),id=btn.dataset.e,b=EX[id];if
 document.querySelectorAll("#exl .ef").forEach(x=>x.remove());
 const d=document.createElement("div");d.className="ef";
 d.innerHTML=`<input class="inp" data-k="name" placeholder="지점명 (필수)"><input class="inp" data-k="address" placeholder="주소"><input class="inp" data-k="phone" type="tel" placeholder="전화번호"><input class="inp" data-k="hours" placeholder="영업시간"><textarea class="inp" data-k="memo" placeholder="메모"></textarea>
+<details class="i18"><summary>다국어 번역 (한국어 정리본 · English · 中文繁體 · 中文简体)</summary><p class="i18n-note">자동 번역: 새로 올린 지점은 한국어만 저장됩니다. 앱에서는 유료 번역 API를 쓰지 않으므로, 영어·중문 내용은 여기에 직접 입력하거나 번역을 요청해 주세요. 비어 있으면 한국어로 표시됩니다.</p>${["ko","en","tw","zh"].map(L=>`<fieldset><legend>${{ko:"한국어",en:"English",tw:"中文繁體",zh:"中文简体"}[L]}</legend>${["name","address","hours"].map(F=>`<input class="inp" data-l="${L}" data-f="${F}" placeholder="${L} ${F}">`).join("")}<textarea class="inp" data-l="${L}" data-f="text" rows="5" placeholder="${L} 안내 내용"></textarea></fieldset>`).join("")}</details>
 <div class="pv">${b.img?`<img src="${esc(b.img)}" alt="">`:`<img style="display:none" alt="">`}<span class="pvs">${b.img?"현재 이미지":"이미지 없음"}</span></div>
 <input type="file" accept="image/jpeg,image/png,application/pdf,.pdf" style="display:none"><button class="sbtn g ri">이미지 교체 (jpg, png, pdf 첫 쪽)</button>
 <div class="br"><button class="sbtn g cc">취소</button><button class="sbtn sv">수정 저장</button></div><div class="em" style="font-size:13px;text-align:center"></div>`;
-d.querySelectorAll("[data-k]").forEach(x=>x.value=b[x.dataset.k]||(x.dataset.k==="name"?b.title||"":""));
+d.querySelectorAll("[data-k]").forEach(x=>x.value=b[x.dataset.k]||(x.dataset.k==="name"?b.title||"":""));d.querySelectorAll("[data-l]").forEach(x=>x.value=((b.i18n||{})[x.dataset.l]||{})[x.dataset.f]||"");
 let newImg=null;const fi=d.querySelector("input[type=file]"),pi=d.querySelector(".pv img"),ps=d.querySelector(".pvs"),sv=d.querySelector(".sv"),em=d.querySelector(".em");
 d.querySelector(".ri").onclick=()=>fi.click();
 fi.onchange=async()=>{const f0=fi.files[0];fi.value="";if(!f0)return;const isPdf=f0.type==="application/pdf"||/\.pdf$/i.test(f0.name);
@@ -237,7 +241,7 @@ if(!isPdf&&!/image\/(jpeg|png)/.test(f0.type)){em.innerHTML=`<span class="err">j
 sv.disabled=true;ps.textContent="이미지 처리 중…";try{newImg=isPdf?await pdfFirst(f0):await compress(f0);pi.src=newImg;pi.style.display="";ps.textContent=`새 이미지 (${Math.round(newImg.length/1024)}KB) · 저장 시 교체`}catch(e){ps.textContent="이미지 처리 실패: "+(e.message||e)}sv.disabled=false};
 d.querySelector(".cc").onclick=()=>d.remove();
 sv.onclick=async()=>{const o={};d.querySelectorAll("[data-k]").forEach(x=>o[x.dataset.k]=x.value.trim());if(!o.name){em.innerHTML=`<span class="err">지점명을 입력하세요.</span>`;return}
-sv.disabled=true;em.textContent="저장 중…";try{const{f,db}=await F();await signIn();const up={...o,updatedAt:f.serverTimestamp()};if(newImg){up.img=newImg;up.type="image"}
+sv.disabled=true;em.textContent="저장 중…";try{const{f,db}=await F();await signIn();const up={...o,updatedAt:f.serverTimestamp()};d.querySelectorAll("[data-l]").forEach(x=>{up[`i18n.${x.dataset.l}.${x.dataset.f}`]=x.value.trim()});if(newImg){up.img=newImg;up.type="image"}
 await timeout(f.updateDoc(f.doc(db,"branches",id),up),15000);em.innerHTML=`<span class="ok">✓ 수정되었습니다</span>`;setTimeout(refresh,700)}catch(e){em.innerHTML=`<span class="err">${esc(emsg(e))}</span>`;sv.disabled=false}};
 row.appendChild(d);d.querySelector("[data-k=name]").focus()}
 function trow(){const d=document.createElement("div");d.className="trow";d.innerHTML=`<input class="inp" data-k="name" placeholder="지점명 (필수)"><input class="inp" data-k="address" placeholder="주소"><input class="inp" data-k="phone" type="tel" placeholder="전화번호"><input class="inp" data-k="hours" placeholder="영업시간"><textarea class="inp" data-k="memo" placeholder="메모"></textarea>`;return d}
