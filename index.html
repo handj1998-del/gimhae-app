@@ -26,33 +26,57 @@ box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 4px 0 #9e1a10,0 8px 16px rgba(2
 .back:active{transform:translateY(2px);box-shadow:0 0 0 #dcdde2}
 .card{background:#fff;border-radius:16px;padding:24px;box-shadow:0 1px 2px rgba(0,0,0,.04),0 8px 24px rgba(0,0,0,.06);font-size:16px;line-height:1.75;color:#333}
 .card p{margin:0;color:#888;text-align:center}
+.grid{display:grid;grid-template-columns:1fr;gap:12px}
+.grid .btn{height:60px;padding:0 18px;gap:14px;font-size:16px;text-decoration:none;line-height:1.3}
+.grid .btn .ic{width:36px;height:36px;border-radius:10px}
+.grid .btn .ic svg{width:20px;height:20px}
+.lbl{flex:1;min-width:0}
+.ext{flex:none;color:#da291c;opacity:.8}
+.btn.call{justify-content:center;margin-top:16px;height:56px;text-decoration:none;font-size:17px}
+@media (min-width:760px){.shell{max-width:720px}.grid{grid-template-columns:1fr 1fr;gap:16px}.grid .btn{height:68px}.grid .btn:last-child{grid-column:1/-1}}
+@media (max-width:360px){.grid .btn{font-size:15px;padding:0 14px}}
 #installBtn{display:none;position:fixed;right:16px;bottom:16px;height:48px;padding:0 24px;border:0;border-radius:24px;font:inherit;font-size:15px;font-weight:700;color:#fff;cursor:pointer;z-index:999;background:linear-gradient(180deg,#ef4a3a,#c4220f);box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 3px 0 #9e1a10,0 8px 16px rgba(0,0,0,.2)}
 #installBtn:active{transform:translateY(2px);box-shadow:0 1px 0 #9e1a10}
 </style></head><body><div class="shell"><header id="hdr"><img src="images/logo.png" alt="LOTTE rent-a-car GIMHAE AIRPORT"></header><main id="app"></main></div>
 <script>
 const T={
-ko:{lt:"한국어",title:"메뉴를 선택하세요",menu:["렌터카 반납 안내","보험 안내","관광 가이드"],back:"언어 선택",back2:"메뉴",soon:"내용 준비 중입니다."},
-en:{title:"Select a menu",menu:["Car Return Guide","Insurance Info","Tour Guide"],back:"Language",back2:"Menu",soon:"Content coming soon."},
-zh:{title:"请选择菜单",menu:["还车指南","保险说明","旅游指南"],back:"选择语言",back2:"菜单",soon:"内容准备中。"},
-tw:{title:"請選擇選單",menu:["還車指南","保險說明","旅遊指南"],back:"選擇語言",back2:"選單",soon:"內容準備中。"}};
-const IDS=["return","insurance","tour"];
+ko:{title:"메뉴를 선택하세요",menu:["김해공항 영업소 반납 안내","차량 보험 안내","관광 가이드","타지역 지점 안내","긴급출동 연결","통역서비스 연결","비짓부산"],back:"언어 선택",back2:"메뉴",soon:"내용 준비 중입니다.",call:"전화 연결"},
+en:{title:"Select a menu",menu:["Gimhae Airport Branch Return Guide","Vehicle Insurance Guide","Tour Guide","Other Branch Locations","Emergency Roadside Assistance","Interpretation Service","Visit Busan"],back:"Language",back2:"Menu",soon:"Content coming soon.",call:"Call"},
+tw:{title:"請選擇選單",menu:["金海機場營業所還車指南","車輛保險說明","旅遊指南","其他地區分店資訊","緊急救援連線","口譯服務連線","Visit Busan 釜山旅遊"],back:"選擇語言",back2:"選單",soon:"內容準備中。",call:"撥打電話"},
+zh:{title:"请选择菜单",menu:["金海机场营业所还车指南","车辆保险说明","旅游指南","其他地区分店信息","紧急救援连线","口译服务连线","Visit Busan 釜山旅游"],back:"选择语言",back2:"菜单",soon:"内容准备中。",call:"拨打电话"}};
+const IDS=["return","insurance","tour","branches","emergency","interpret","visitbusan"];
+/* phone: 번호를 넣으면 (예: "1588-0000") 해당 페이지에 전화 걸기 버튼이 생깁니다. */
 const CONTENT={
 return:{ko:"",en:"",tw:"",zh:""},
 insurance:{ko:"",en:"",tw:"",zh:""},
-tour:{ko:"",en:"",tw:"",zh:""}
+tour:{ko:"",en:"",tw:"",zh:""},
+branches:{ko:"",en:"",tw:"",zh:""},
+emergency:{phone:"",ko:"",en:"",tw:"",zh:""},
+interpret:{phone:"",ko:"",en:"",tw:"",zh:""}
 };
+const LINKS={visitbusan:{ko:"https://www.visitbusan.net/kr/index.do",en:"https://www.visitbusan.net/en/index.do",tw:"https://www.visitbusan.net/zht/index.do",zh:"https://www.visitbusan.net/zhs/index.do"}};
 const esc=x=>String(x).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const app=document.getElementById('app'),hdr=document.getElementById('hdr');let lang;
-const SVG=["<path d='M5 17h14M6 17v2M18 17v2M4 13l2-5h12l2 5v4H4z'/><circle cx='8' cy='14' r='1'/><circle cx='16' cy='14' r='1'/>","<path d='M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z'/><path d='M9 12l2 2 4-4'/>","<path d='M9 4L3 6v14l6-2 6 2 6-2V4l-6 2z'/><path d='M9 4v14M15 6v14'/>"];
-const ic=i=>`<span class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${SVG[i]}</svg></span>`;
+const SVG={
+return:"<path d='M5 17h14M6 17v2M18 17v2M4 13l2-5h12l2 5v4H4z'/><circle cx='8' cy='14' r='1'/><circle cx='16' cy='14' r='1'/>",
+insurance:"<path d='M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z'/><path d='M9 12l2 2 4-4'/>",
+tour:"<path d='M9 4L3 6v14l6-2 6 2 6-2V4l-6 2z'/><path d='M9 4v14M15 6v14'/>",
+branches:"<path d='M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z'/><circle cx='12' cy='10' r='2.5'/>",
+emergency:"<path d='M10.3 3.9L2 18a2 2 0 0 0 1.7 3h16.6a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z'/><path d='M12 9v4M12 17h.01'/>",
+interpret:"<path d='M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z'/><path d='M8 10h8M8 14h5'/>",
+visitbusan:"<path d='M14 4h6v6M20 4l-9 9'/><path d='M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5'/>"};
+const ic=id=>`<span class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${SVG[id]}</svg></span>`;
+const EXT=`<svg class="ext" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6M20 4l-9 9"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>`;
+const PHONE=`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg>`;
 const ARR=`<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>`;
 const L=[["ko","한국어","Korean"],["en","English","영어"],["tw","中文 繁體","Traditional Chinese"],["zh","中文 简体","Simplified Chinese"]];
 window.home=function(){hdr.className="";app.className="center";app.innerHTML=L.map(([k,a,b])=>`<button class="btn" onclick="menu('${k}')"><span>${a}<small>${b}</small></span></button>`).join('');scrollTo(0,0)}
-window.menu=function(l){hdr.className="small";lang=l;const t=T[l];app.className="";app.innerHTML=`<button class="back" onclick="home()">${ARR}${t.back}</button><h2 class="title">${t.title}</h2>`+
-t.menu.map((m,i)=>`<button class="btn sub" onclick="page(${i})">${ic(i)}${m}</button>`).join('');scrollTo(0,0)}
-window.page=function(i){hdr.className="small";const t=T[lang],id=IDS[i];
-const txt=((CONTENT[id]&&CONTENT[id][lang])||"").trim();
-const body=txt?esc(txt).replace(/\n/g,"<br>"):`<p>${t.soon}</p>`;
+window.menu=function(l){hdr.className="small";lang=l;const t=T[l];app.className="";app.innerHTML=`<button class="back" onclick="home()">${ARR}${t.back}</button><h2 class="title">${t.title}</h2><div class="grid">`+
+t.menu.map((m,i)=>{const id=IDS[i];return LINKS[id]?`<a class="btn sub" href="${LINKS[id][l]}" target="_blank" rel="noopener">${ic(id)}<span class="lbl">${m}</span>${EXT}</a>`:`<button class="btn sub" onclick="page(${i})">${ic(id)}<span class="lbl">${m}</span></button>`}).join('')+`</div>`;scrollTo(0,0)}
+window.page=function(i){hdr.className="small";const t=T[lang],id=IDS[i],c=CONTENT[id]||{};
+const txt=(c[lang]||"").trim(),ph=(c.phone||"").trim();
+let body=txt?esc(txt).replace(/\n/g,"<br>"):(ph?"":`<p>${t.soon}</p>`);
+if(ph)body+=`<a class="btn call" href="tel:${esc(ph.replace(/[^0-9+]/g,''))}">${PHONE}<span>${t.call} ${esc(ph)}</span></a>`;
 app.className="";app.innerHTML=`<button class="back" onclick="menu('${lang}')">${ARR}${t.back2}</button><h2 class="title">${t.menu[i]}</h2><div class="card">${body}</div>`;scrollTo(0,0)}
 home();
 </script><button id="installBtn">설치하기 / Install</button>
