@@ -381,4 +381,12 @@ for(let i=0;i<rows.length;i++){prog(i,rows.length,`저장 중… ${i+1} / ${rows
 prog(rows.length,rows.length,`완료: ${ok}개 저장`+(fail.length?`<div class="err">${fail.map(esc).join("<br>")}</div>`:""));
 btn.disabled=false;if(ok){$("tl").innerHTML="";$("tl").appendChild(trow())}refresh()}
 home();
+</script><script type="module">
+(()=>{let cur="",popping=false;const W=(n,key)=>{const f=window[n];if(!f)return;window[n]=function(...a){const k=key(a);const st={v:n,a,k};if(!popping&&k!==cur){if(cur)history.pushState(st,"");else history.replaceState(st,"")}cur=k;return f.apply(this,a)}};
+W("home",()=>"home");W("menu",a=>"menu:"+a[0]);W("page",a=>"page:"+a[0]+":"+lang);W("admin",()=>"admin");
+history.replaceState({v:"home",a:[],k:"home"},"");cur="home";
+addEventListener("popstate",e=>{const z=document.getElementById("zi");if(z&&z.style.display==="block"){window.zoomX()}const lb=document.getElementById("lb");if(lb)lb.style.display="none";
+const s=e.state;if(!s||s==="bm"||!s.v)return;if(s.k===cur)return;
+if(s.v==="page"&&s.a.length&&s.k.split(":")[2])lang=s.k.split(":")[2];
+popping=true;try{window[s.v](...s.a)}finally{popping=false}cur=s.k;});})();
 </script></body></html>
