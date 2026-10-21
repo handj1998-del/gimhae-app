@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#da291c"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><link rel="icon" href="icons/icon-192.png">
+<meta name="theme-color" content="#da291c"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><link rel="icon" href="icons/icon-192.png">
 <title>김해공항 롯데렌터카 안내</title>
 <meta name="description" content="반납 안내 · 보험 안내 · 지점 안내 | Return · Insurance · Branches">
 <meta property="og:type" content="website">
@@ -214,9 +214,9 @@ if(ph){const tl=(c.tel||ph).replace(/[^0-9+]/g,'');body+=`<div class="num">${esc
 app.className=c.ins?"insp":"";app.innerHTML=`<button class="back" onclick="menu('${lang}')">${ARR}${t.back2}</button><h2 class="title">${t.menu[i]}</h2><div class="card">${body}</div>`;scrollTo(0,0);if(c.ins)fitIns()}
 </script><div id="zi" onclick="if(event.target.tagName!=='IMG')zoomX()"><b onclick="zoomX()">✕</b><img alt="" onclick="this.parentNode.classList.toggle('big')"></div><script>window.zoomI=src=>{const z=document.getElementById('zi');z.classList.remove('big');z.querySelector('img').src=src;z.style.display='block';document.body.style.overflow='hidden'};window.zoomX=()=>{document.getElementById('zi').style.display='none';document.body.style.overflow=''};</script><button id="installBtn">설치하기 / Install</button>
 <script>
-if('serviceWorker' in navigator){addEventListener('load',()=>navigator.serviceWorker.register('./sw.js'));}
+if('serviceWorker' in navigator){navigator.serviceWorker.getRegistrations().then(r=>r.forEach(x=>x.unregister()));if(window.caches)caches.keys().then(k=>k.forEach(n=>caches.delete(n)));}
 let deferredPrompt;const ib=document.getElementById('installBtn');
-addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;ib.style.display='block';});
+addEventListener('beforeinstallprompt',e=>{e.preventDefault();});if(ib)ib.remove();
 ib.addEventListener('click',async()=>{if(!deferredPrompt)return;deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;ib.style.display='none';});
 addEventListener('appinstalled',()=>{ib.style.display='none';});
 </script>
