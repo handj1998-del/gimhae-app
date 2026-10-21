@@ -61,7 +61,7 @@ box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 4px 0 #9e1a10,0 8px 16px rgba(2
 @media (max-width:600px){header.small{padding:6px 20px}header.small img{height:clamp(36px,5.5dvh,52px)}
 #app.mn{display:flex;flex-direction:column;box-sizing:border-box;height:calc(100dvh - var(--hh,60px));padding-top:1.2dvh!important;padding-bottom:1.2dvh!important;max-width:none}
 #app.mn .back{height:clamp(30px,4.6dvh,42px);font-size:clamp(13px,1.9dvh,15px);flex:none}#app.mn .title{margin:.6dvh 0 1dvh;font-size:clamp(17px,2.8dvh,22px);flex:none}
-#app.mn .grid{flex:1;min-height:0;grid-template-rows:repeat(8,1fr);gap:clamp(6px,1.1dvh,12px)}#app.mn .grid .btn{height:auto;min-height:40px;max-height:76px;font-size:clamp(15px,2.4dvh,19px)}
+#app.mn .grid{flex:1;min-height:0;grid-template-rows:repeat(7,1fr);gap:clamp(6px,1.1dvh,12px)}#app.mn .grid .btn{height:auto;min-height:40px;max-height:76px;font-size:clamp(15px,2.4dvh,19px)}
 #app.mn .grid .btn .ic{width:clamp(30px,4.8dvh,42px);height:clamp(30px,4.8dvh,42px)}#app.mn .grid .btn .ic svg{width:55%;height:55%}#app.mn .grid .btn .ic.gi svg{width:70%;height:70%}
 #app.mn .grev{margin-top:0}#app.mn .grq{flex:none;margin:1dvh 0 0;font-size:clamp(12.5px,1.9dvh,15px)}}
 .grid{display:grid;grid-template-columns:1fr;gap:12px}
@@ -199,7 +199,7 @@ const ARR=`<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="c
 const L=[["ko","한국어","Korean"],["en","English","영어"],["tw","中文 繁體","Traditional Chinese"],["zh","中文 简体","Simplified Chinese"],["ja","日本語","Japanese"]];
 window.home=function(){hdr.className="";app.className="center";app.innerHTML=`<div class="sel"><b>언어를 선택해 주세요</b><span>Please select your language</span><span>请选择语言</span><span>言語を選択してください</span></div>`+L.map(([k,a,b])=>`<button class="btn" onclick="menu('${k}')"><span>${a}<small>${b}</small></span></button>`).join('')+`<button class="adm-link" onclick="admin()">관리자</button>`;scrollTo(0,0)}
 window.menu=function(l){hdr.className="small";lang=l;const t=T[l];app.className="mn";app.innerHTML=`<button class="back" onclick="home()">${ARR}${t.back}</button><h2 class="title">${t.title}</h2><div class="grid">`+
-t.menu.map((m,i)=>{const id=IDS[i];return LINKS[id]?`<a class="btn sub" href="${LINKS[id][l]}" target="_blank" rel="noopener">${ic(id)}<span class="lbl">${m}</span>${EXT}</a>`:`<button class="btn sub" onclick="page(${i})">${ic(id)}<span class="lbl">${m}</span></button>`}).join('')+`<a class="btn sub grev" href="https://g.page/r/CaN122OvKnpqEBM/review" target="_blank" rel="noopener"><span class="ic gi">${GICON}</span><span class="lbl">${GREV[l][0]}</span>${EXT}</a></div><p class="grq">${GREV[l][1]}</p>`;scrollTo(0,0)}
+t.menu.map((m,i)=>{const id=IDS[i];if(id==="tour")return"";return LINKS[id]?`<a class="btn sub" href="${LINKS[id][l]}" target="_blank" rel="noopener">${ic(id)}<span class="lbl">${m}</span>${EXT}</a>`:`<button class="btn sub" onclick="page(${i})">${ic(id)}<span class="lbl">${m}</span></button>`}).join('')+`<a class="btn sub grev" href="https://g.page/r/CaN122OvKnpqEBM/review" target="_blank" rel="noopener"><span class="ic gi">${GICON}</span><span class="lbl">${GREV[l][0]}</span>${EXT}</a></div><p class="grq">${GREV[l][1]}</p>`;scrollTo(0,0)}
 window.page=function(i){hdr.className="small";const t=T[lang],id=IDS[i],c=CONTENT[id]||{};
 if(id==="branches")return branches(i);
 const txt=(c[lang]||"").trim(),ph=((lang==="ko"&&c.phoneKo)?c.phoneKo:c.phone||"").trim();
