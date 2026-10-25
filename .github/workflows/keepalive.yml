@@ -1,0 +1,25 @@
+name: Render keepalive
+on:
+  schedule:
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: write
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Ping Render app
+        run: |
+          for i in 1 2 3; do
+            code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 60 "https://gimhae-rental-guide-app.onrender.com/?keepalive=$(date +%s)" || echo 000)
+            echo "attempt $i: HTTP $code"
+            [ "$code" -ge 200 ] && [ "$code" -lt 400 ] && exit 0
+            sleep 15
+          done
+          echo "::warning::Render app did not respond OK after 3 attempts"
+      - name: Prevent 60-day schedule auto-disable
+        uses: gautamkrishnar/keepalive-workflow@v2
+        continue-on-error: true
