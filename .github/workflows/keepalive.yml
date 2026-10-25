@@ -4,8 +4,7 @@ on:
     - cron: '*/10 * * * *'
   workflow_dispatch:
 permissions:
-  contents: read
-  actions: write
+  contents: write
 jobs:
   ping:
     runs-on: ubuntu-latest
@@ -20,6 +19,11 @@ jobs:
             sleep 15
           done
           echo "::warning::Render app did not respond OK after 3 attempts"
-      - name: Prevent 60-day schedule auto-disable
-        uses: gautamkrishnar/keepalive-workflow@v2
+      - name: Monthly activity commit (prevents 60-day schedule auto-disable)
+        if: github.event_name == 'schedule'
         continue-on-error: true
+        run: |
+          [ "$(date -u +%d%H)" = "0100" ] && [ "$(date -u +%M)" -lt 10 ] || exit 0
+          git clone --depth 1 "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" r && cd r
+          git -c user.name=github-actions -c user.email=41898282+github-actions[bot]@users.noreply.github.com commit --allow-empty -m "chore: keepalive $(date -u +%F)"
+          git push
