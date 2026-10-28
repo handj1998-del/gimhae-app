@@ -1,20 +1,21 @@
 <!DOCTYPE html>
 <html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,viewport-fit=cover,initial-scale=1">
-<meta name="theme-color" content="#da291c"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><link rel="icon" href="icons/icon-192.png">
-<title>김해공항 롯데렌터카 안내</title>
+<meta name="theme-color" content="#da291c"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png?v=2"><link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png?v=2"><link rel="icon" type="image/png" sizes="48x48" href="icons/favicon-48.png?v=2"><link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png?v=2">
+<title>롯데렌터카 김해공항영업소 안내</title>
 <meta name="description" content="반납 안내 · 보험 안내 · 지점 안내 | Return · Insurance · Branches">
 <meta property="og:type" content="website">
-<meta property="og:title" content="김해공항 롯데렌터카 안내">
-<meta property="og:description" content="반납 안내 · 보험 안내 · 지점 안내 | Return · Insurance · Branches">
+<meta property="og:title" content="롯데렌터카 김해공항영업소 안내">
+<meta property="og:description" content="반납 · 보험 · 지점 · 채팅상담 안내 | Lotte Rent-a-car Gimhae Airport Guide">
 <meta property="og:url" content="https://handj1998-del.github.io/gimhae-app/">
-<meta property="og:image" content="https://handj1998-del.github.io/gimhae-app/images/og-image.png">
+<meta property="og:image" content="https://handj1998-del.github.io/gimhae-app/images/og-image.png?v=2">
+<meta property="og:image:secure_url" content="https://handj1998-del.github.io/gimhae-app/images/og-image.png?v=2"><meta property="og:image:type" content="image/png"><meta property="og:image:alt" content="롯데렌터카 김해공항영업소 로고"><meta property="og:site_name" content="롯데렌터카 김해공항영업소">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:locale" content="ko_KR">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="김해공항 롯데렌터카 안내">
-<meta name="twitter:description" content="반납 안내 · 보험 안내 · 지점 안내 | Return · Insurance · Branches">
-<meta name="twitter:image" content="https://handj1998-del.github.io/gimhae-app/images/og-image.png">
+<meta name="twitter:title" content="롯데렌터카 김해공항영업소 안내">
+<meta name="twitter:description" content="반납 · 보험 · 지점 · 채팅상담 안내 | Lotte Rent-a-car Gimhae Airport Guide">
+<meta name="twitter:image" content="https://handj1998-del.github.io/gimhae-app/images/og-image.png?v=2">
 <link rel="preconnect" href="https://cdn.jsdelivr.net"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;600;700&family=Noto+Sans+Thai:wght@400;600;700&family=Noto+Sans+SC:wght@400;600;700&family=Noto+Sans+TC:wght@400;600;700&display=swap">
 <style>
 *{box-sizing:border-box}
@@ -272,9 +273,9 @@ const L=[["ko","한국어","Korean"],["en","English","영어"],["tw","中文 繁
 const GB=[["대여 전 고객","Before Pick-up","取車前","取车前","レンタル前","ก่อนรับรถ","Sebelum Ambil Kereta","Trước khi nhận xe"],["대여 후 고객","After Pick-up","取車後","取车后","レンタル後","หลังรับรถ","Selepas Ambil Kereta","Sau khi nhận xe"]];
 const GBL=["en","zh-Hant","zh-Hans","ja","th","ms","vi"];
 window.home=function(){app.style.zoom="";app.style.height="";hdr.className="";app.className="center gate";const sub=a=>`<span class="gl">${a.slice(1).map((x,i)=>`<span lang="${GBL[i]}">${x}</span>`).join("")}</span>`;
-app.innerHTML=`<div class="gwrap"><a id="g_pre" class="btn gbtn" href="https://handj1998-del.github.io/gimhae-pickup-guide/"><span class="gi1">${GICO[0]}</span><b>${GB[0][0]}</b>${sub(GB[0])}</a><button id="g_post" class="btn gbtn" onclick="langs()"><span class="gi1">${GICO[1]}</span><b>${GB[1][0]}</b>${sub(GB[1])}</button></div><button class="adm-link" onclick="admin()">관리자 · v22</button>`;scrollTo(0,0)};
+app.innerHTML=`<div class="gwrap"><a id="g_pre" class="btn gbtn" href="https://handj1998-del.github.io/gimhae-pickup-guide/"><span class="gi1">${GICO[0]}</span><b>${GB[0][0]}</b>${sub(GB[0])}</a><button id="g_post" class="btn gbtn" onclick="langs()"><span class="gi1">${GICO[1]}</span><b>${GB[1][0]}</b>${sub(GB[1])}</button></div><button class="adm-link" onclick="admin()">관리자 · v23</button>`;scrollTo(0,0)};
 const GICO=[`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17h14M6 17l1.5-5h9L18 17"/><circle cx="8" cy="17" r="1.6"/><circle cx="16" cy="17" r="1.6"/><path d="M12 3v5M9.5 5.5 12 8l2.5-2.5"/></svg>`,`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 14h14M6 14l1.5-5h9L18 14v4H6z"/><circle cx="8.5" cy="16" r=".6"/><circle cx="15.5" cy="16" r=".6"/><path d="M9 4h6M12 4v3"/></svg>`];
-window.langs=function(){app.style.zoom="";app.style.height="";hdr.className="";app.className="center";app.innerHTML=`<button class="back" onclick="home()">${ARR}</button><div class="sel"><b>언어를 선택해 주세요</b><span>Please select your language</span><span>请选择语言</span><span>言語を選択してください</span></div>`+`<div class="lgrid">`+L.map(([k,a,b])=>`<button class="btn" onclick="menu('${k}')"><span>${a}<small>${b}</small></span></button>`).join('')+`</div>`+`<button class="adm-link" onclick="admin()">관리자 · v22</button>`;scrollTo(0,0)}
+window.langs=function(){app.style.zoom="";app.style.height="";hdr.className="";app.className="center";app.innerHTML=`<button class="back" onclick="home()">${ARR}</button><div class="sel"><b>언어를 선택해 주세요</b><span>Please select your language</span><span>请选择语言</span><span>言語を選択してください</span></div>`+`<div class="lgrid">`+L.map(([k,a,b])=>`<button class="btn" onclick="menu('${k}')"><span>${a}<small>${b}</small></span></button>`).join('')+`</div>`+`<button class="adm-link" onclick="admin()">관리자 · v23</button>`;scrollTo(0,0)}
 window.menu=function(l){app.style.zoom="";app.style.height="";hdr.className="small";document.documentElement.style.setProperty("--hh",hdr.offsetHeight+"px");lang=l;document.documentElement.lang={tw:"zh-Hant",zh:"zh-Hans"}[l]||l;const t=T[l];app.className="mn";app.innerHTML=`<button class="back" onclick="langs()">${ARR}${t.back}</button><h2 class="title">${t.title}</h2><div class="grid">`+
 [0,1,2,5,4,6,7,8,9,10].map((i,o)=>{const id=IDS[i],m=t.menu[i],k=o<4?"mpri":"msec";return LINKS[id]?`<a class="btn sub ${k}" href="${LINKS[id][l]}" target="_blank" rel="noopener">${ic(id)}<span class="lbl">${m}${id==="chat"?`<small class="hrs">(08:00~21:00)</small>`:""}</span>${EXT}</a>`:`<button class="btn sub ${k}" onclick="page(${i})">${ic(id)}<span class="lbl">${m}</span></button>`}).join('')+`<a class="btn sub msec grev" href="https://g.page/r/CaN122OvKnpqEBM/review" target="_blank" rel="noopener"><span class="ic gi">${GICON}</span><span class="lbl">${GREV[l][0]}</span>${EXT}</a></div><p class="grq">${GREV[l][1]}</p>`;scrollTo(0,0);fitMenu();requestAnimationFrame(()=>{scrollTo(0,0);fitMenu()});setTimeout(fitMenu,300)}
 window.fitMenu=function(){const g=app.querySelector(".grid");if(!g)return;let pr=document.getElementById("vhp");if(!pr){pr=document.createElement("div");pr.id="vhp";pr.style.cssText="position:fixed;top:0;left:0;width:1px;height:100svh;visibility:hidden;pointer-events:none";document.body.appendChild(pr)}const VV=Math.min(pr.offsetHeight||1e9,innerHeight,window.visualViewport?visualViewport.height:1e9,document.documentElement.clientHeight||1e9);document.documentElement.style.setProperty("--vh",VV+"px");document.documentElement.style.setProperty("--hh",Math.ceil(hdr.getBoundingClientRect().height)+"px");app.style.zoom="";app.style.height="";const VH=()=>VV,OK=()=>{const q=app.querySelector(".grq"),last=app.querySelector(".grid .btn:last-child");const bt=Math.max(q?q.getBoundingClientRect().bottom:0,last?last.getBoundingClientRect().bottom:0);return bt<=VH()+1};app.style.zoom="";app.style.height="";};addEventListener("resize",()=>{if(app.className==="mn")fitMenu()});addEventListener("load",()=>{if(app.className==="mn"){fitMenu();setTimeout(fitMenu,500);setTimeout(fitMenu,1500)}});window.visualViewport&&visualViewport.addEventListener("resize",()=>{if(app.className==="mn")fitMenu()});hdr.querySelector("img")&&hdr.querySelector("img").addEventListener("load",()=>{if(app.className==="mn")fitMenu()});
