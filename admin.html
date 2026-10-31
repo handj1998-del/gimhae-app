@@ -100,7 +100,7 @@ textarea.inp{height:72px;padding:10px 14px;resize:vertical}
 
 const FB="https://www.gstatic.com/firebasejs/10.12.2/";
 const CFG={apiKey:"AIzaSyC2zl8XARZ9ha9_aihICO4T4b1tGKi02C4",authDomain:"gimhae-lotte.firebaseapp.com",projectId:"gimhae-lotte",storageBucket:"gimhae-lotte.firebasestorage.app",messagingSenderId:"76093741699",appId:"1:76093741699:web:e30a9489803c5552da59b6"};
-const ADMIN_PW="8000";
+const ADMIN_H="ad5f9478d603fe97eae2bbff07f76fe7f18610343b5f3bc8e00945ee51b30d2c";const pwOk=async v=>{try{const b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(v));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join("")===ADMIN_H}catch(e){return false}};
 const esc=x=>String(x).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const ARR=`<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>`;
 const SVG={branches:"<path d='M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z'/><circle cx='12' cy='10' r='2.5'/>"};
@@ -114,7 +114,7 @@ const $=id=>document.getElementById(id);
 async function list(){const{f,db}=await F();const q=f.query(f.collection(db,"branches"),f.orderBy("createdAt"));const s=await f.getDocs(q);return s.docs.map(d=>({id:d.id,...d.data()}))}
 window.gate=function(){if(sessionStorage.getItem("gadm")==="1")return panel();hdr.className="small";app.className="";
 app.innerHTML=`<h2 class="title">관리자</h2><div class="sec"><h3>비밀번호를 입력하세요</h3><input id="pw" class="inp" type="password" inputmode="numeric" autocomplete="current-password" placeholder="비밀번호"><button class="sbtn" id="pwb">들어가기</button><div id="pwe" class="err"></div></div>`;
-const go=()=>{if($("pw").value===ADMIN_PW){sessionStorage.setItem("gadm","1");panel()}else{$("pwe").textContent="비밀번호가 올바르지 않습니다.";$("pw").value="";$("pw").focus()}};
+const go=async()=>{if(await pwOk($("pw").value)){sessionStorage.setItem("gadm","1");panel()}else{$("pwe").textContent="비밀번호가 올바르지 않습니다.";$("pw").value="";$("pw").focus()}};
 $("pwb").onclick=go;$("pw").onkeydown=e=>{if(e.key==="Enter")go()};$("pw").focus()};
 const ERR={"auth/admin-restricted-operation":"Firebase에서 '익명 로그인'이 꺼져 있습니다. (Authentication > 로그인 방법 > 익명 사용 설정)","auth/operation-not-allowed":"Firebase에서 '익명 로그인'이 꺼져 있습니다. (Authentication > 로그인 방법 > 익명 사용 설정)","permission-denied":"저장 권한이 없습니다. Firestore 규칙을 게시했는지 확인하세요."};
 const emsg=e=>(ERR[e&&e.code]||"오류가 발생했습니다")+` [${(e&&(e.code||e.message))||e}]`;
