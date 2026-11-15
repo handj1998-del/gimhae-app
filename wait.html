@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#da291c">
+<meta name="robots" content="noindex">
+<title>LOTTE rent-a-car</title>
+<link rel="icon" type="image/png" href="images/logo.png">
+<style>
+:root{--red:#da291c;--ink:#191b1f;--sub:#5b616b;--bg:#f4f5f7}
+*{box-sizing:border-box}html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR","Noto Sans JP","Noto Sans SC","Noto Sans TC",sans-serif}
+.wrap{min-height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px 40px;text-align:center}
+.logo{width:min(240px,78vw);height:auto;margin-bottom:28px}
+h1{font-size:22px;line-height:1.4;margin:0 0 8px;font-weight:800;word-break:keep-all}
+.note{font-size:15px;color:var(--sub);margin:0 0 22px;line-height:1.5;word-break:keep-all}
+.spin{width:36px;height:36px;border:3px solid #ead9d7;border-top-color:var(--red);border-radius:50%;animation:s .8s linear infinite;margin:0 auto 28px}
+@keyframes s{to{transform:rotate(360deg)}}
+.err{color:var(--red);font-size:15px;font-weight:600}
+.sbtn{display:inline-block;min-width:200px;border:0;border-radius:14px;background:var(--red);color:#fff;font-size:16px;font-weight:700;padding:14px 22px;cursor:pointer;text-decoration:none}
+.sbtn.g{background:#fff;color:var(--ink);border:1px solid #e0e2e6;margin-top:8px}
+.sbtn[hidden]{display:none}
+.hint{font-size:13px;color:var(--sub);margin:16px 0 0;min-height:1.4em}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <img class="logo" src="images/logo.png" alt="LOTTE rent-a-car GIMHAE AIRPORT">
+  <h1 id="t">잠시만 기다려 주세요</h1>
+  <p class="note" id="n">서버를 준비하고 있어요 (최대 1분)</p>
+  <div class="spin" id="sp" aria-hidden="true"></div>
+  <p class="err" id="er" hidden></p>
+  <button type="button" class="sbtn g" id="go" hidden></button>
+  <p class="hint" id="hi"></p>
+</div>
+<script>
+const ALLOW=new Set(["gimhae-rental-guide-app.onrender.com","lotte-rentcar-chat.onrender.com"]);
+const I18N={
+  ko:{t:"잠시만 기다려 주세요",n:"서버를 준비하고 있어요 (최대 1분)",go:"바로 열기",hi:"시간이 오래 걸리면 바로 열기를 눌러 주세요.",er:"연결할 수 없는 주소입니다."},
+  en:{t:"Please wait a moment",n:"Preparing the server (up to 1 minute)",go:"Open now",hi:"If this is taking too long, tap Open now.",er:"This address cannot be opened."},
+  tw:{t:"請稍候",n:"正在準備伺服器（最多1分鐘）",go:"立即開啟",hi:"若等待過久，請點「立即開啟」。",er:"無法開啟此網址。"},
+  zh:{t:"请稍候",n:"正在准备服务器（最多1分钟）",go:"立即打开",hi:"如果等待过久，请点击“立即打开”。",er:"无法打开此地址。"},
+  ja:{t:"少々お待ちください",n:"サーバーを準備しています（最大1分）",go:"今すぐ開く",hi:"待ち時間が長い場合は「今すぐ開く」を押してください。",er:"このアドレスは開けません。"},
+  th:{t:"กรุณารอสักครู่",n:"กำลังเตรียมเซิร์ฟเวอร์ (ไม่เกิน 1 นาที)",go:"เปิดเลย",hi:"หากรอนานเกินไป ให้แตะที่ “เปิดเลย”",er:"ไม่สามารถเปิดที่อยู่นี้ได้"},
+  ms:{t:"Sila tunggu sebentar",n:"Sedang menyediakan pelayan (sehingga 1 minit)",go:"Buka sekarang",hi:"Jika ini mengambil masa terlalu lama, ketik Buka sekarang.",er:"Alamat ini tidak dapat dibuka."},
+  vi:{t:"Vui lòng đợi trong giây lát",n:"Đang khởi động máy chủ (tối đa 1 phút)",go:"Mở ngay",hi:"Nếu chờ quá lâu, hãy nhấn Mở ngay.",er:"Không thể mở địa chỉ này."}
+};
+const AL={ko:"ko","en":"en",tw:"tw","zh":"zh",ja:"ja",th:"th",ms:"ms",vi:"vi","zh-tw":"tw","zh-hant":"tw","zh-hk":"tw","zh-mo":"tw","zh-cn":"zh","zh-hans":"zh","zh-sg":"zh"};
+const q=new URLSearchParams(location.search);
+const lang=AL[(q.get("lang")||"ko").trim().toLowerCase().replace(/_/g,"-")]||"ko";
+const T=I18N[lang];
+document.documentElement.lang={tw:"zh-Hant",zh:"zh-Hans"}[lang]||lang;
+document.title=T.t+" · LOTTE rent-a-car";
+document.getElementById("t").textContent=T.t;
+document.getElementById("n").textContent=T.n;
+document.getElementById("go").textContent=T.go;
+function dest(){
+  const raw=q.get("to")||"";
+  if(!/^https:\/\/[^\\\s/@]+/i.test(raw))return null;
+  let u;try{u=new URL(raw)}catch(e){return null}
+  if(u.protocol!=="https:"||u.username||u.password||!ALLOW.has(u.hostname.toLowerCase()))return null;
+  return u.href;
+}
+const to=dest();
+const go=document.getElementById("go");
+const hi=document.getElementById("hi");
+if(!to){
+  document.getElementById("sp").hidden=true;
+  document.getElementById("n").hidden=true;
+  const er=document.getElementById("er");er.hidden=false;er.textContent=T.er;
+}else{
+  const hz=new URL("/healthz",to).href;
+  const open=()=>{location.replace(to)};
+  go.hidden=false;go.onclick=open;
+  const poke=()=>{fetch(hz+(hz.includes("?")?"&":"?")+"w="+Date.now(),{mode:"no-cors"}).catch(()=>{})};
+  poke();
+  const started=Date.now();
+  let done=false;
+  const tick=async()=>{
+    if(done)return;
+    try{
+      const r=await fetch(hz+(hz.includes("?")?"&":"?")+"t="+Date.now(),{mode:"cors"});
+      if(r.ok){done=true;open();return}
+    }catch(e){}
+    if(Date.now()-started>15000){go.classList.remove("g");hi.textContent=T.hi}
+    if(Date.now()-started>90000){hi.textContent=T.hi}
+    poke();
+    setTimeout(tick,1500);
+  };
+  tick();
+}
+</script>
+</body>
+</html>
