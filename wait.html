@@ -34,7 +34,9 @@ h1{font-size:22px;line-height:1.4;margin:0 0 8px;font-weight:800;word-break:keep
   <p class="hint" id="hi"></p>
 </div>
 <script>
-const ALLOW=new Set(["gimhae-rental-guide-app.onrender.com","lotte-rentcar-chat.onrender.com"]);
+const ALLOW=new Set(["gimhae-rental-guide-app.onrender.com","lotte-rentcar-chat.onrender.com","rentcar-chat-gimhae.onrender.com"]);
+// Chat hosts: primary first. Edit this one line when hosts change.
+const CHAT_HOSTS=["rentcar-chat-gimhae.onrender.com","lotte-rentcar-chat.onrender.com"];
 const I18N={
   ko:{t:"잠시만 기다려 주세요",n:"서버를 준비하고 있어요 (최대 1분)",go:"바로 열기",hi:"시간이 오래 걸리면 바로 열기를 눌러 주세요.",er:"연결할 수 없는 주소입니다."},
   en:{t:"Please wait a moment",n:"Preparing the server (up to 1 minute)",go:"Open now",hi:"If this is taking too long, tap Open now.",er:"This address cannot be opened."},
@@ -61,6 +63,11 @@ function dest(){
   if(u.protocol!=="https:"||u.username||u.password||!ALLOW.has(u.hostname.toLowerCase()))return null;
   return u.href;
 }
+function candidates(href){
+  const u=new URL(href);
+  if(!CHAT_HOSTS.includes(u.hostname.toLowerCase())) return [href];
+  return CHAT_HOSTS.map(h=>{const x=new URL(href);x.hostname=h;return x.href});
+}
 const to=dest();
 const go=document.getElementById("go");
 const hi=document.getElementById("hi");
@@ -69,25 +76,43 @@ if(!to){
   document.getElementById("n").hidden=true;
   const er=document.getElementById("er");er.hidden=false;er.textContent=T.er;
 }else{
-  const hz=new URL("/healthz",to).href;
-  const open=()=>{location.replace(to)};
-  go.hidden=false;go.onclick=open;
-  const poke=()=>{fetch(hz+(hz.includes("?")?"&":"?")+"w="+Date.now(),{mode:"no-cors"}).catch(()=>{})};
-  poke();
+  const hosts=candidates(to);
+  const healthy={};
+  const PREFER_MS=60000, LATE_MS=90000;
   const started=Date.now();
   let done=false;
-  const tick=async()=>{
+  const open=url=>{if(done)return;done=true;location.replace(url||hosts[0])};
+  go.hidden=false;go.onclick=()=>open(hosts[0]);
+  const hzOf=url=>new URL("/healthz",url).href;
+  const poke=url=>{const hz=hzOf(url);fetch(hz+(hz.includes("?")?"&":"?")+"w="+Date.now(),{mode:"no-cors"}).catch(()=>{})};
+  const pick=()=>{
     if(done)return;
+    const elapsed=Date.now()-started;
+    if(healthy[hosts[0]]) return open(hosts[0]);
+    if(elapsed>=PREFER_MS){
+      for(let i=1;i<hosts.length;i++){ if(healthy[hosts[i]]) return open(hosts[i]); }
+    }
+    if(elapsed>15000){go.classList.remove("g");hi.textContent=T.hi}
+    if(elapsed>LATE_MS){hi.textContent=T.hi}
+  };
+  const ping=async url=>{
+    if(done)return;
+    const hz=hzOf(url);
     try{
       const r=await fetch(hz+(hz.includes("?")?"&":"?")+"t="+Date.now(),{mode:"cors"});
-      if(r.ok){done=true;open();return}
+      if(r.ok){healthy[url]=true;pick();return}
     }catch(e){}
-    if(Date.now()-started>15000){go.classList.remove("g");hi.textContent=T.hi}
-    if(Date.now()-started>90000){hi.textContent=T.hi}
-    poke();
+    poke(url);
+  };
+  const tick=async()=>{
+    if(done)return;
+    await Promise.all(hosts.map(ping));
+    pick();
     setTimeout(tick,1500);
   };
+  hosts.forEach(poke);
   tick();
+  setTimeout(pick,PREFER_MS);
 }
 </script>
 </body>
